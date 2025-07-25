@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useTodoViewModel } from '../../../hooks/useTodoViewModel';
 import TodoItem from '../../components/TodoItem';
+import './TodoPage.css';
 
 const TodoPage = () => {
-  const { todos, loading, addTodo, toggleTodo } = useTodoViewModel();
+  const { todos, loading, addTodo, toggleTodo, clearTodos } = useTodoViewModel();
   const [title, setTitle] = useState('');
 
   const handleAdd = () => {
@@ -14,14 +15,25 @@ const TodoPage = () => {
   };
 
   return (
-    <div>
-      <h1>ToDo App</h1>
-      <input value={title} onChange={e => setTitle(e.target.value)} />
-      <button onClick={handleAdd}>Add</button>
+    <div className="todo-app">
+      <div className="todo-header">
+        <h1>ToDo App</h1>
+        <button onClick={clearTodos} className="clear-button">Clear All</button>
+      </div>
+      <div className="todo-controls">
+        <input
+          value={title}
+          onChange={e => setTitle(e.target.value)}
+          placeholder="Enter a task..."
+        />
+        <button onClick={handleAdd}>Add</button>
+        
+      </div>
+
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <ul>
+        <ul className="todo-list">
           {todos.map(todo => (
             <TodoItem key={todo.id} todo={todo} onToggle={() => toggleTodo(todo.id)} />
           ))}

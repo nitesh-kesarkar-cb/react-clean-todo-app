@@ -29,5 +29,10 @@ export const useTodoViewModel = () => {
     await fetchTodos();
   };
 
-  return { todos, loading, addTodo, toggleTodo };
+  const clearTodos = async () => {
+    await container.todoService.clearTodos();
+    await fetchTodos();
+  };
+
+  return { todos, loading, addTodo, toggleTodo, clearTodos };
 };

@@ -6,11 +6,9 @@ type Props = {
 };
 
 const TodoItem = ({ todo, onToggle }: Props) => (
-  <li onClick={onToggle} style={{ cursor: 'pointer' }}>
+  <li className="todo-item" onClick={onToggle}>
     <input type="checkbox" checked={todo.completed} readOnly />
-    <span style={{ textDecoration: todo.completed ? 'line-through' : 'none' }}>
-      {todo.title}
-    </span>
+    <span className={todo.completed ? 'completed' : ''}>{todo.title}</span>
   </li>
 );
 
