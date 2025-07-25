@@ -25,13 +25,18 @@ const TodoPage = () => {
           value={title}
           onChange={e => setTitle(e.target.value)}
           placeholder="Enter a task..."
+          onKeyDown={e => {
+            if (e.key === 'Enter') handleAdd();
+          }}
         />
         <button onClick={handleAdd}>Add</button>
         
       </div>
 
-      {loading ? (
+       {loading ? (
         <p>Loading...</p>
+      ) : todos.length === 0 ? (
+        <p className="empty-message">No todos found.</p>
       ) : (
         <ul className="todo-list">
           {todos.map(todo => (
