@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useTodoViewModel } from '../../../hooks/useTodoViewModel';
-import TodoItem from '../../components/TodoItem';
+import { useTodoViewModel } from '../../hooks/useTodoViewModel';
+import TodoItem from '../TodoItem';
 import './TodoPage.css';
 
 const TodoPage = () => {
