@@ -11,6 +11,7 @@ const TodoPage = () => {
     if (title.trim()) {
       addTodo(title);
       setTitle('');
+      // throw new Error('Simulated error for testing Sentry');
     }
   };
 
