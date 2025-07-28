@@ -1,10 +1,14 @@
 
-import { TodoPage } from './features/todos';
+import { RouterProvider } from '@tanstack/react-router';
+import { router } from './routes/router';
+import { withSentryBoundary } from './shared/hoc/withSentryBoundary';
 import './App.css'
 
-function App() {
+const WrappedRouterProvider = withSentryBoundary(RouterProvider);
 
-  return <TodoPage />;
+function App() {
+  return <WrappedRouterProvider router={router} />;
 }
 
-export default App
+export default App;
+
