@@ -1,11 +1,22 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTodoViewModel } from '../../hooks/useTodoViewModel';
 import TodoItem from '../TodoItem';
 import './TodoPage.css';
+import { useFlags } from 'flagsmith/react';
+import { useNavigate } from '@tanstack/react-router';
 
 const TodoPage = () => {
   const { todos, loading, addTodo, toggleTodo, clearTodos } = useTodoViewModel();
   const [title, setTitle] = useState('');
+  const flags = useFlags(['todo']);
+  const navigate = useNavigate();
+ 
+   useEffect(() => {
+     if (!flags.todo?.enabled) {
+        console.warn('Todo feature is disabled. Redirecting to login.');
+        navigate({ to: '/login' });
+    }
+   }, [flags]);
 
   const handleAdd = () => {
     if (title.trim()) {

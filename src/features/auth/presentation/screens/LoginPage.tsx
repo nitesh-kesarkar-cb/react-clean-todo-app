@@ -1,13 +1,24 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
+import { useFlags } from 'flagsmith/react';
 import { useLoginViewModel } from '../../hooks/useLoginViewModel';
 import './LoginPage.css';
 
 const LoginPage = () => {
+  const flags = useFlags(['auth']);
+
   const [email, setEmail] = useState('test@example.com');
   const [password, setPassword] = useState('password123');
   const { login } = useLoginViewModel();
   const navigate = useNavigate();
+
+
+   useEffect(() => {
+     if (!flags.auth?.enabled) {
+        console.warn('Auth feature is disabled. Redirecting to todos.');
+        navigate({ to: '/todos' });
+    }
+   }, [flags]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,7 +45,6 @@ const LoginPage = () => {
             required
           />
         </label>
-
         <label>
           Password:
           <input
@@ -44,7 +54,6 @@ const LoginPage = () => {
             required
           />
         </label>
-
         <button type="submit">Login</button>
       </form>
     </div>
