@@ -5,8 +5,9 @@ import {
   Navigate,
   createRootRoute,
 } from '@tanstack/react-router';
-import LoginPage from '../(common)/features/auth/presentation/screens/LoginPage';
-import { adminRouteTree } from '../(admin)/routes/router';
+import { allTodosRoute } from '../(admin)/routes/router';
+import { loginRoute } from '../(common)/routes/router';
+import { todosRoute } from '../(org)/routes/router';
 
 export const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -14,14 +15,12 @@ export const rootRoute = createRootRoute({
 // Dummy auth function (replace with your real auth logic)
 const getUser = () => {
   try {
-    console.log('Fetching user role from localStorage', localStorage.getItem('role'));
-    return JSON.parse(localStorage.getItem('role') || 'null');
+    return localStorage.getItem('role') || null;
   } catch {
     return null;
   }
 };
 
-getUser(); // Call to initialize user role
 export const RequireAuth = ({
   children,
   allowedRoles,
@@ -31,7 +30,7 @@ export const RequireAuth = ({
 }) => {
   const userRole = getUser();
   if (!userRole) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/common/login" />;
   }
   if (allowedRoles && !allowedRoles.includes(userRole)) {
     return <div>Not authorized</div>;
@@ -39,56 +38,43 @@ export const RequireAuth = ({
   return <>{children}</>;
 };
 
-
-
 // Index route: redirect to login if not logged in, or to role dashboard if logged in
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: () => {
     const userRole = getUser();
-    console.log('User role:', userRole);
     if (!userRole) {
-      return <Navigate to="/login" />;
+      return <Navigate to="/common/login" />;
     }
     switch (userRole) {
       case 'admin':
-        return <Navigate to="/admin" />;
+        return <Navigate to="/admin/alltodos" />;
       case 'org':
-        return <Navigate to="/org" />;
-      case 'common':
-        return <Navigate to="/common" />;
+        return <Navigate to="/org/todos" />;
       default:
-        return <Navigate to="/login" />;
+        return <Navigate to="/common/login" />;
     }
   },
 });
 
 // Login route
-const loginRoute = createRoute({
+export const commonRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: 'login',
-  component: LoginPage,
+  path: 'common',
 });
 
-// Admin root and dashboard
-// const adminRootRoute = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: 'admin',
-//   component: () => (
-//     <RequireAuth allowedRoles={['admin']}>
-//       <Outlet />
-//     </RequireAuth>
-//   ),
-// });
-// const adminDashboardRoute = createRoute({
-//   getParentRoute: () => adminRootRoute,
-//   path: '/',
-//   component: Alltodos,
-// });
+export const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'admin',
+  component: () => (
+    <RequireAuth allowedRoles={['admin']}>
+      <Outlet />
+    </RequireAuth>
+  ),
+});
 
-// Org root and dashboard
-const orgRootRoute = createRoute({
+export const orgRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: 'org',
   component: () => (
@@ -97,38 +83,19 @@ const orgRootRoute = createRoute({
     </RequireAuth>
   ),
 });
-// const orgDashboardRoute = createRoute({
-//   getParentRoute: () => orgRootRoute,
-//   path: '/',
-//   component: OrgDashboard,
-// });
-
-// // Common root and dashboard
-// const commonRootRoute = createRoute({
-//   getParentRoute: () => rootRoute,
-//   path: 'common',
-//   component: () => (
-//     <RequireAuth allowedRoles={['common']}>
-//       <Outlet />
-//     </RequireAuth>
-//   ),
-// });
-// const commonDashboardRoute = createRoute({
-//   getParentRoute: () => commonRootRoute,
-//   path: '/',
-//   component: CommonDashboard,
-// });
-
-
 
 // Build route tree
 const routeTree = rootRoute.addChildren([
   indexRoute,
-  loginRoute,
-  adminRouteTree,
-    // adminRootRoute.addChildren([adminDashboardRoute]),
-  // orgRootRoute.addChildren([orgDashboardRoute]),
-  // commonRootRoute.addChildren([commonDashboardRoute]),
+  commonRoute.addChildren([
+    loginRoute
+  ]),
+  adminRoute.addChildren([
+    allTodosRoute
+  ]),
+  orgRoute.addChildren([
+    todosRoute
+  ]),
 ]);
 
 export const router = createRouter({ routeTree });

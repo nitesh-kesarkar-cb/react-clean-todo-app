@@ -1,29 +1,15 @@
 import {
-  createRouter,
   createRoute,
-  Outlet,
-  createRootRoute,
 } from '@tanstack/react-router';
+
+import { commonRoute } from '../../routes/router';
 import LoginPage from '../features/auth/presentation/screens/LoginPage';
 
-const rootRoute = createRootRoute({
-  component: () => <Outlet />,
-});
-
-const commonRootRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'common',
-  component: () => (
-      <Outlet />
-  ),
-});
-const todosRoute = createRoute({
-  getParentRoute: () => commonRootRoute,
+const loginRoute = createRoute({
+  getParentRoute: () => commonRoute,
   path: 'login',
-  component: () => (
-      <LoginPage />
-  ),
+  component: () => <LoginPage />,
 });
 
-export const commonRouteTree = rootRoute.addChildren([commonRootRoute.addChildren([todosRoute])]);
 
+export { loginRoute, }

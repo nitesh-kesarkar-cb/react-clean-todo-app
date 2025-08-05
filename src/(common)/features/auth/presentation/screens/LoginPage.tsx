@@ -16,7 +16,7 @@ const LoginPage = () => {
       const { token } = await login(email, password, role);
       console.log('Login successful:', token);
 
-      navigate({ to: '/todos' });
+      navigate({ to: '/' });
     } catch (err) {
       console.error('Login failed:', err);
     }
@@ -51,7 +51,6 @@ const LoginPage = () => {
             <select value={role} onChange={e => setRole(e.target.value)} required>
               <option value="admin">Admin</option>
               <option value="org">Organization</option>
-              <option value="common">Common</option>
             </select>
           </label>
 

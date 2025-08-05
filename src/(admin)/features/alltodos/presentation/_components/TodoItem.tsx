@@ -1,4 +1,4 @@
-import type { Todo } from '../domain/models/Todo';
+import type { Todo } from '../../domain/models/Todo';
 
 type Props = {
   todo: Todo;

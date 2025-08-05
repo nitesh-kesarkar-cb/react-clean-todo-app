@@ -1,28 +1,14 @@
 import {
   createRoute,
   Outlet,
-  createRootRoute,
 } from '@tanstack/react-router';
 
 import TodoPage from '../features/alltodos/presentation/screens/TodoPage';
 import { RequireAuth } from '../../routes/router';
-import { rootRoute } from '../../routes/router';
+import { adminRoute } from '../../routes/router';
 
-// const rootRoute = createRootRoute({
-//   component: () => <Outlet />,
-// });
-
-const adminRootRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: 'admin',
-  component: () => (
-    <RequireAuth allowedRoles={['admin']}>
-      <Outlet />
-    </RequireAuth>
-  ),
-});
-const todosRoute = createRoute({
-  getParentRoute: () => adminRootRoute,
+const allTodosRoute = createRoute({
+  getParentRoute: () => adminRoute,
   path: 'alltodos',
   component: () => (
     <RequireAuth allowedRoles={['admin']}>
@@ -31,4 +17,5 @@ const todosRoute = createRoute({
   ),
 });
 
-export const adminRouteTree = rootRoute.addChildren([adminRootRoute.addChildren([todosRoute])]);
+
+export { allTodosRoute, }

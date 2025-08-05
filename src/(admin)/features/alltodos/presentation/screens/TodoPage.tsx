@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTodoViewModel } from '../../hooks/useTodoViewModel';
-import TodoItem from '../TodoItem';
+import TodoItem from '../_components/TodoItem';
 import './TodoPage.css';
 
 const TodoPage = () => {
@@ -18,7 +18,7 @@ const TodoPage = () => {
   return (
     <div className="todo-app">
       <div className="todo-header">
-        <h1>ToDo App</h1>
+        <h1>All Admin Todos</h1>
         <button onClick={clearTodos} className="clear-button">Clear All</button>
       </div>
       <div className="todo-controls">
