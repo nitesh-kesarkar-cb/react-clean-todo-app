@@ -1,4 +1,4 @@
-import type { UserProfile } from "../../application/interfaces/UserInterface";
+import type { UserProfile } from "../../di/UserInterface";
 
 export const loginUserApi = async (): Promise<UserProfile> => {
     const response = await fetch('/api/auth/me', {

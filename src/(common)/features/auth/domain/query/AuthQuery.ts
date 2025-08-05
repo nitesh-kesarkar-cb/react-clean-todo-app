@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import type { UserProfile } from '../../application/interfaces/UserInterface';
+import type { UserProfile } from '../../di/UserInterface';
 import { loginUserApi } from '../api/authApi';
 import { authQueryKeys } from '../../../../_constants/queryKeys';
 
