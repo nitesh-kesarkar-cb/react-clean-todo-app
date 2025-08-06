@@ -1,4 +1,4 @@
-import { loginUseCase } from '../application/useCases/loginUseCase';
+import { loginUseCase } from '../application/useCases/loginUseCase'
 
 export const useLoginViewModel = () => {
   const login = async ({ name, email, password, role }: { name: string, email: string, password: string, role: string }) => {
@@ -7,5 +7,5 @@ export const useLoginViewModel = () => {
     return result;
   };
 
-  return { login };
-};
+    return { login }
+}

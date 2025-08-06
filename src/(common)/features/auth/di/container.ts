@@ -1,7 +1,7 @@
-import { AuthServiceMock } from '../infrastructure/AuthServiceMock';
+import { AuthServiceMock } from '../infrastructure/AuthServiceMock'
 
 export const authContainer = {
-  authService: AuthServiceMock,
-};
+    authService: AuthServiceMock,
+}
 
-export type AuthContainer = typeof authContainer;
+export type AuthContainer = typeof authContainer
