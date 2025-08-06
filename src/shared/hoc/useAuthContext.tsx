@@ -24,6 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (storedUser) {
             setUser(storedUser);
         }
+        //eslint-disable-next-line react-hooks/exhaustive-deps
     }, [children]); // Only run on initial mount
 
     const getUserProfile = () => {

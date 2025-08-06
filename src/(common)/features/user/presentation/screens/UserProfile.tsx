@@ -19,6 +19,7 @@ const UserProfilePage = () => {
     if (user) {
       fetchAllUsers();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchAllUsers = async () => {

@@ -50,8 +50,8 @@ export const TodoServiceImpl: TodoService = {
     const res = await fetch(BASE_URL);
     const data = await res.json();
     await Promise.all(
-      data.map((todo: any) =>
-        fetch(`${BASE_URL}/${todo._id}`, { method: 'DELETE' })
+      data.map((todo: unknown) =>
+        fetch(`${BASE_URL}/${(todo as { _id: string })._id}`, { method: 'DELETE' })
       )
     );
   }

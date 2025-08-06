@@ -18,7 +18,7 @@ export const rootRoute = createRootRoute({
         {error.message}
         <button
           onClick={() => {
-            reset
+            reset();
           }}
         >
           Retry
@@ -52,7 +52,7 @@ export const RequireAuth = ({
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => {
+  component: () => function IndexRouteCheck() {
     const { getUserProfile } = useAuthContext();
     const user = getUserProfile();
     const userRole = user?.role;
