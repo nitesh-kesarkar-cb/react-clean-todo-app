@@ -37,19 +37,17 @@ const UserProfilePage = () => {
   }
 
   const handleDelete = async () => {
-    navigate({ to: '/' });
+    alert('Profile deleted for the admin only');
   };
 
+  const handleExport = () => {
+    alert('Profile exported for the organization only');
+  };
   const handleShare = () => {
-    alert('Profile shared!');
+    alert('Profile shared for the organization and admin!');
   };
 
-  // Example edit handler (expand as needed)
-  const handleSave = () => {
-
-    // Save logic here
-  };
-
+ 
 
   return (
     <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-8">
@@ -97,10 +95,10 @@ const UserProfilePage = () => {
                     <Button onClick={handleDelete} variant="destructive">Delete</Button>
                   </RoleBasedAccessComponent>
                   <RoleBasedAccessComponent userRole={user.role} allowRoles={[UserRole.ADMIN, UserRole.ORG]} onError={(error) => console.error(error)}>
-                    <Button onClick={handleShare}>Edit</Button>
+                    <Button onClick={handleShare}>Share</Button>
                   </RoleBasedAccessComponent>
                   <RoleBasedAccessComponent userRole={user.role} allowRoles={[UserRole.ORG]} onError={(error) => console.error(error)}>
-                    <Button onClick={handleShare} variant="outline">Share</Button>
+                    <Button onClick={handleExport} variant="outline">Export</Button>
                   </RoleBasedAccessComponent>
                 </div>
               </li>
