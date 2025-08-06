@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import { useAuthContext } from '../../../../../shared/hoc/useAuthContext';
 import { useUserViewModel } from '../../hooks/useUserViewModal';
 import type { UserDetails } from '../../di/UserInterface';
@@ -12,7 +11,6 @@ import { UserRole } from '@/shared/_constants/enums';
 const UserProfilePage = () => {
   const { user } = useAuthContext();
   const [allUsers, setAllUsers] = useState<UserDetails[]>([]);
-  const navigate = useNavigate();
 
   const { getUsers } = useUserViewModel();
 

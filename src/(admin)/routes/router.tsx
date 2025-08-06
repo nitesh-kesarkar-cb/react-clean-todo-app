@@ -1,6 +1,5 @@
 import {
   createRoute,
-  Outlet,
 } from '@tanstack/react-router';
 
 import TodoPage from '../features/alltodos/presentation/screens/TodoPage';
