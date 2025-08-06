@@ -1,14 +1,13 @@
-import type { UserProfile } from "../../di/UserInterface";
+import type { UserProfile } from "../../../user/di/UserInterface";
 
-export const loginUserApi = async (): Promise<UserProfile> => {
-    const response = await fetch('/api/auth/me', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
+export const loginUserApi = async (user: UserProfile): Promise<UserProfile> => {
+    return new Promise<UserProfile>((resolve, reject) => {
+        setTimeout(() => {
+            if (user) {
+                resolve({ id: '123', name: user.name, email: user.email, role: user.role });
+            } else {
+                reject(new Error('Failed to fetch user'));
+            }
+        }, 1000);
     });
-    if (!response.ok) {
-        throw new Error('Failed to fetch user');
-    }
-    return response.json();
 }

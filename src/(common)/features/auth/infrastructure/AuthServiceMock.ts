@@ -1,15 +1,23 @@
+import { useQuery, type UseQueryResult } from '@tanstack/react-query';
+import type { UserProfile } from '../../user/di/UserInterface';
+import { authQueryKeys } from '../../../_constants/queryKeys';
+import { loginUserApi } from '../domain/api/authApi';
 import type { AuthService } from '../domain/services/AuthService';
 
 export const AuthServiceMock: AuthService = {
-  async login(_email: string, _password: string, _role: string) {
-    // fake success login
-    console.log('Logging in user:', _email, _role);
-    return new Promise(resolve =>
-      
-      setTimeout(() => {
-        // Simulate storing user role in local storage
-        localStorage.setItem('role', _role);
-        resolve({ token: 'fake-token-123' })}, 500)
-    );
+  // simulate login via your real loginUserApi
+  loginUser: async (user: UserProfile): Promise<UserProfile> => {
+    const response = await loginUserApi(user);
+    return response as UserProfile;
   },
 };
+
+export function useLoginQuery(
+  user: UserProfile
+): UseQueryResult<UserProfile, unknown> {
+  return useQuery<UserProfile>({
+    queryKey: authQueryKeys.currentUser,
+    queryFn: () => AuthServiceMock.loginUser(user),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+}

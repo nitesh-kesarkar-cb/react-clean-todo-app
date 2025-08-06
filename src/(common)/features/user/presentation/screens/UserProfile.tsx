@@ -2,28 +2,20 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useLoginViewModel } from '../../hooks/useLoginViewModel';
 import './LoginPage.css';
-import { useEncryptedLocalStorage } from '../../../../../shared/hoc/useStorageContext';
-import type { UserProfile } from '../../../user/di/UserInterface';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('test@example.com');
-  const [role, setRole] = useState('admin');
+  const [role, setRole] = useState('common'); 
   const [password, setPassword] = useState('password123');
-  const [name, setName] = useState('Test User');
   const { login } = useLoginViewModel();
   const navigate = useNavigate();
-  //
-  const [localUser, setLocalUser] = useEncryptedLocalStorage<UserProfile | null>('user-profile', null);
 
   const handleSubmit = async (e: React.FormEvent) => {
-
     e.preventDefault();
     try {
-      const user = await login({ name, email, password, role });
-      console.log('Login successful:', user);
+      const { token } = await login(email, password, role);
+      console.log('Login successful:', token);
 
-      // Store user data in local storage or context as needed
-      setLocalUser(user);
       navigate({ to: '/' });
     } catch (err) {
       console.error('Login failed:', err);
@@ -34,15 +26,6 @@ const LoginPage = () => {
     <div className="login-page">
       <h2>Login</h2>
       <form className="login-form" onSubmit={handleSubmit}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            required
-          />
-        </label>
         <label>
           Email:
           <input
@@ -63,13 +46,13 @@ const LoginPage = () => {
           />
         </label>
 
-        <label>
-          Role:
-          <select value={role} onChange={e => setRole(e.target.value)} required>
-            <option value="admin">Admin</option>
-            <option value="org">Organization</option>
-          </select>
-        </label>
+          <label>
+            Role:
+            <select value={role} onChange={e => setRole(e.target.value)} required>
+              <option value="admin">Admin</option>
+              <option value="org">Organization</option>
+            </select>
+          </label>
 
         <button type="submit">Login</button>
       </form>

@@ -3,12 +3,19 @@ import { RouterProvider } from '@tanstack/react-router';
 import { router } from './routes/router';
 import { withSentryBoundary } from './shared/hoc/withSentryBoundary';
 import './App.css'
+import { StorageProvider } from './shared/hoc/useStorageContext';
+import { AuthProvider } from './(common)/features/user/hooks/useAuthContext';
 
 const WrappedRouterProvider = withSentryBoundary(RouterProvider);
 
+
 function App() {
-  return <WrappedRouterProvider router={router} />;
+  return (
+    <StorageProvider>
+      <AuthProvider> <WrappedRouterProvider router={router} /></AuthProvider>
+
+    </StorageProvider>
+  );
 }
 
 export default App;
-

@@ -1,3 +1,5 @@
+import type { UserProfile } from "../../../user/di/UserInterface";
+
 export interface AuthService {
-  login(email: string, password: string, role: string): Promise<{ token: string }>;
-}
+  loginUser(user: UserProfile): UserProfile | Promise<UserProfile>;
+} 

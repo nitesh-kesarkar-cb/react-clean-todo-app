@@ -8,18 +8,26 @@ import {
 import { allTodosRoute } from '../(admin)/routes/router';
 import { loginRoute } from '../(common)/routes/router';
 import { todosRoute } from '../(org)/routes/router';
+import { useStorage } from '../shared/hoc/useStorageContext';
+import type { UserProfile } from '../(common)/features/user/di/UserInterface';
 
 export const rootRoute = createRootRoute({
   component: () => <Outlet />,
+  errorComponent: ({ error, reset }) => {
+    return (
+      <div>
+        {error.message}
+        <button
+          onClick={() => {
+            reset
+          }}
+        >
+          Retry
+        </button>
+      </div>
+    )
+  },
 });
-// Dummy auth function (replace with your real auth logic)
-const getUser = () => {
-  try {
-    return localStorage.getItem('role') || null;
-  } catch {
-    return null;
-  }
-};
 
 export const RequireAuth = ({
   children,
@@ -28,7 +36,12 @@ export const RequireAuth = ({
   children: React.ReactNode;
   allowedRoles?: string[];
 }) => {
-  const userRole = getUser();
+  const storage = useStorage();
+  const user = storage.getItem<UserProfile>("user-profile");
+  const userRole = user?.role;
+
+  console.log('User:', user);
+
   if (!userRole) {
     return <Navigate to="/common/login" />;
   }
@@ -43,7 +56,10 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: () => {
-    const userRole = getUser();
+    const storage = useStorage();
+    const user = storage.getItem<UserProfile>("user-profile");
+    const userRole = user?.role;
+      console.log('User:', user);
     if (!userRole) {
       return <Navigate to="/common/login" />;
     }
