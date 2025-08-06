@@ -21,7 +21,7 @@
     "ecmaVersion": 12,
     "sourceType": "module"
   },
-  "plugins": [ "react", "@typescript-eslint", "react-hooks" ],
+  "plugins": [ "react", "@typescript-eslint", "react-hooks","react-refresh" ],
   "rules": {
     "no-use-before-define": "off",
     "@typescript-eslint/no-use-before-define": [ "error" ],
@@ -35,7 +35,8 @@
     "react-hooks/exhaustive-deps": "warn",
     "import/prefer-default-export": "off",
     "react/prop-types": "off",
-    "prettier/prettier": [ "error", { "endOfLine": "auto" } ]
+    "prettier/prettier": [ "error", { "endOfLine": "auto" } ],
+    "react-refresh/only-export-components": ["off", { "allowConstantExport": true }]
   },
   "settings": {
     "import/resolver": {

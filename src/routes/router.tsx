@@ -1,62 +1,114 @@
 import {
-    createRouter,
-    createRoute,
-    RootRoute,
-    Outlet,
-    Navigate,
-} from '@tanstack/react-router'
+  createRouter,
+  createRoute,
+  Outlet,
+  Navigate,
+  createRootRoute,
+} from '@tanstack/react-router';
+import { allTodosRoute } from '../(admin)/routes/router';
+import { loginRoute, userDetailsRoute } from '../(common)/routes/router';
+import { todosRoute } from '../(org)/routes/router';
+import { useAuthContext } from '../shared/hoc/useAuthContext';
 
-import TodoPage from '../features/todos/presentation/screens/TodoPage'
-import LoginPage from '../features/auth/presentation/screens/LoginPage'
-import { MapPage } from '../features/map/MapPage'
-import LanguageSelector from '../shared/components/LanguageSelector'
+export const rootRoute = createRootRoute({
+  component: () => <Outlet />,
+  errorComponent: ({ error, reset }) => {
+    return (
+      <div>
+        {error.message}
+        <button
+          onClick={() => {
+            reset();
+          }}
+        >
+          Retry
+        </button>
+      </div>
+    )
+  },
+});
 
-declare module '@tanstack/react-router' {
-    interface Register {
-        router: typeof router
-    }
-}
+export const RequireAuth = ({
+  children,
+  allowedRoles,
+}: {
+  children: React.ReactNode;
+  allowedRoles?: string[];
+}) => {
+  const { getUserProfile } = useAuthContext();
+  const user = getUserProfile();
+  const userRole = user?.role;
 
-const rootRoute = new RootRoute({
-    component: () => {
-        return (
-            <>
-                <LanguageSelector />
-                <Outlet />
-            </>
-        )
-    },
-})
+  if (!userRole) {
+    return <Navigate to="/common/login" />;
+  }
+  if (allowedRoles && !allowedRoles.includes(userRole)) {
+    return <div>Not authorized</div>;
+  }
+  return <>{children}</>;
+};
 
+// Index route: redirect to login if not logged in, or to role dashboard if logged in
 const indexRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: '/',
-    component: () => <Navigate to="/login" />,
-})
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: () => function IndexRouteCheck() {
+    const { getUserProfile } = useAuthContext();
+    const user = getUserProfile();
+    const userRole = user?.role;
+    if (!userRole) {
+      return <Navigate to="/common/login" />;
+    }
+    switch (userRole) {
+      case 'admin':
+        return <Navigate to="/admin/alltodos" />;
+      case 'org':
+        return <Navigate to="/org/todos" />;
+      default:
+        return <Navigate to="/common/login" />;
+    }
+  },
+});
 
-const loginRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: 'login',
-    component: LoginPage,
-})
+// Login route
+export const commonRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'common',
+});
 
-const todosRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: 'todos',
-    component: TodoPage,
-})
+export const adminRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'admin',
+  component: () => (
+    <RequireAuth allowedRoles={['admin']}>
+      <Outlet />
+    </RequireAuth>
+  ),
+});
 
-const mapsRoute = createRoute({
-    getParentRoute: () => rootRoute,
-    path: 'maps',
-    component: MapPage,
-})
+export const orgRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: 'org',
+  component: () => (
+    <RequireAuth allowedRoles={['org']}>
+      <Outlet />
+    </RequireAuth>
+  ),
+});
 
+// Build route tree
 const routeTree = rootRoute.addChildren([
-    indexRoute,
-    todosRoute,
+  indexRoute,
+  commonRoute.addChildren([
     loginRoute,
-    mapsRoute,
-])
+    userDetailsRoute,
+  ]),
+  adminRoute.addChildren([
+    allTodosRoute
+  ]),
+  orgRoute.addChildren([
+    todosRoute
+  ]),
+]);
 
-export const router = createRouter({ routeTree })
+export const router = createRouter({ routeTree });
