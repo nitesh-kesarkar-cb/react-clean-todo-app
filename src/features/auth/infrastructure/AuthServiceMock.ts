@@ -1,10 +1,11 @@
-import type { AuthService } from '../domain/services/AuthService';
+import type { AuthService } from '../domain/services/AuthService'
 
 export const AuthServiceMock: AuthService = {
-  async login(_email: string, _password: string) {
-    // fake success login
-    return new Promise(resolve =>
-      setTimeout(() => resolve({ token: 'fake-token-123' }), 500)
-    );
-  },
-};
+    async login(email: string, password: string) {
+        console.log('Mock login called with:', email, password)
+        // fake success login
+        return new Promise((resolve) =>
+            setTimeout(() => resolve({ token: 'fake-token-123' }), 500)
+        )
+    },
+}

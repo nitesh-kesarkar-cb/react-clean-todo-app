@@ -1,7 +1,7 @@
-import { container } from '../../../di/container';
+import { container } from '../../../di/container'
 
 export const toggleTodoUseCase = {
-  execute: (id: string) => {
-    return container.todoService.toggleTodo(id);
-  },
-};
+    execute: (id: string) => {
+        return container.todoService.toggleTodo(id)
+    },
+}
