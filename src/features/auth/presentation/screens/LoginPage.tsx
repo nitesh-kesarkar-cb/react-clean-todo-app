@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useLoginViewModel } from '../../hooks/useLoginViewModel';
 import './LoginPage.css';
+import { useTranslation } from 'react-i18next';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('test@example.com');
   const [password, setPassword] = useState('password123');
+  const { t } = useTranslation();
   const { login } = useLoginViewModel();
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ const LoginPage = () => {
 
   return (
     <div className="login-page">
-      <h2>Login</h2>
+      <h2>{ t('pages.login') }</h2>
       <form className="login-form" onSubmit={handleSubmit}>
         <label>
           Email:
