@@ -1,63 +1,121 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
-import { useLoginViewModel } from '../../hooks/useLoginViewModel';
-import './LoginPage.css';
+import { useAuthContext } from '../../../../../shared/hoc/useAuthContext';
+import { useUserViewModel } from '../../hooks/useUserViewModal';
+import type { UserDetails } from '../../di/UserInterface';
+import { Button } from '@/components/ui/button';
+import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent';
+import { UserRole } from '@/shared/_constants/enums';
 
-const LoginPage = () => {
-  const [email, setEmail] = useState('test@example.com');
-  const [role, setRole] = useState('common'); 
-  const [password, setPassword] = useState('password123');
-  const { login } = useLoginViewModel();
+
+
+const UserProfilePage = () => {
+  const { user } = useAuthContext();
+  const [allUsers, setAllUsers] = useState<UserDetails[]>([]);
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const { token } = await login(email, password, role);
-      console.log('Login successful:', token);
+  const { getUsers } = useUserViewModel();
 
-      navigate({ to: '/' });
-    } catch (err) {
-      console.error('Login failed:', err);
+  // Fetch user details if needed
+  useEffect(() => {
+    if (user) {
+      fetchAllUsers();
+    }
+  }, [user]);
+
+  const fetchAllUsers = async () => {
+    try {
+      const data = await getUsers();
+      setAllUsers(data.users || []);
+    } catch (error) {
+      console.error('Failed to fetch users:', error);
     }
   };
 
+  const handleEdit = () => {
+    alert('Edit functionality only available for loggedin users.');
+  }
+
+  const handleDelete = async () => {
+    navigate({ to: '/' });
+  };
+
+  const handleShare = () => {
+    alert('Profile shared!');
+  };
+
+  // Example edit handler (expand as needed)
+  const handleSave = () => {
+
+    // Save logic here
+  };
+
+
   return (
-    <div className="login-page">
-      <h2>Login</h2>
-      <form className="login-form" onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input
-            type="email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-          />
-        </label>
+    <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-8">
+      <h2 className="text-2xl font-bold mb-6 text-center">User Profile</h2>
+      {user && <div>
+        <div className="mb-4">
+          <div className="flex flex-col gap-2">
+            <span className="font-semibold">Name:</span>
+            <span>{user.name}</span>
+          </div>
+          <div className="flex flex-col gap-2 mt-2">
+            <span className="font-semibold">Email:</span>
+            <span>{user.email}</span>
+          </div>
+          <div className="flex flex-col gap-2 mt-2">
+            <span className="font-semibold">Role:</span>
+            <span>{user.role}</span>
+          </div>
+        </div>
+        <div className="flex gap-4 mt-6 justify-center">
+          <Button onClick={handleEdit}>Edit Profile</Button>
+        </div>
+      </div>}
 
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-          />
-        </label>
+      {user && <div className="mt-8">
+        <h3 className="text-xl font-semibold mb-4">All Users</h3>
+        {allUsers.length > 0 ? (
+          <ul className="space-y-4">
+            {allUsers.map((userDetail: UserDetails) => (
+              <li key={userDetail.id} className="p-4 border rounded-lg">
+                <div className="flex flex-col gap-2">
+                  <span className="font-semibold">Name:</span>
+                  <span>{userDetail.firstName}</span>
+                </div>
+                <div className="flex flex-col gap-2 mt-2">
+                  <span className="font-semibold">Email:</span>
+                  <span>{userDetail.email}</span>
+                </div>
+                <div className="flex flex-col gap-2 mt-2">
+                  <span className="font-semibold">Role:</span>
+                  <span>{userDetail.role}</span>
+                </div>
+                <div className="flex gap-4 mt-4 justify-end">
+                  <RoleBasedAccessComponent userRole={user.role} allowRoles={[UserRole.ADMIN]} onError={(error) => console.error(error)}>
+                    <Button onClick={handleDelete} variant="destructive">Delete</Button>
+                  </RoleBasedAccessComponent>
+                  <RoleBasedAccessComponent userRole={user.role} allowRoles={[UserRole.ADMIN, UserRole.ORG]} onError={(error) => console.error(error)}>
+                    <Button onClick={handleShare}>Edit</Button>
+                  </RoleBasedAccessComponent>
+                  <RoleBasedAccessComponent userRole={user.role} allowRoles={[UserRole.ORG]} onError={(error) => console.error(error)}>
+                    <Button onClick={handleShare} variant="outline">Share</Button>
+                  </RoleBasedAccessComponent>
+                </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No users found.</p>
+        )}
+      </div>}
 
-          <label>
-            Role:
-            <select value={role} onChange={e => setRole(e.target.value)} required>
-              <option value="admin">Admin</option>
-              <option value="org">Organization</option>
-            </select>
-          </label>
 
-        <button type="submit">Login</button>
-      </form>
+
+
     </div>
   );
 };
 
-export default LoginPage;
+export default UserProfilePage;

@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import { useLoginViewModel } from '../../hooks/useLoginViewModel';
 import './LoginPage.css';
-import { useEncryptedLocalStorage } from '../../../../../shared/hoc/useStorageContext';
-import type { UserProfile } from '../../../user/di/UserInterface';
+import { useStorage } from '../../../../../shared/hoc/useStorageContext';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('test@example.com');
@@ -12,8 +11,7 @@ const LoginPage = () => {
   const [name, setName] = useState('Test User');
   const { login } = useLoginViewModel();
   const navigate = useNavigate();
-  //
-  const [localUser, setLocalUser] = useEncryptedLocalStorage<UserProfile | null>('user-profile', null);
+  const storage = useStorage();
 
   const handleSubmit = async (e: React.FormEvent) => {
 
@@ -23,7 +21,7 @@ const LoginPage = () => {
       console.log('Login successful:', user);
 
       // Store user data in local storage or context as needed
-      setLocalUser(user);
+      storage.setItem('user-profile', user);
       navigate({ to: '/' });
     } catch (err) {
       console.error('Login failed:', err);

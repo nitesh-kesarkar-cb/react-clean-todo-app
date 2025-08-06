@@ -4,7 +4,7 @@ import { router } from './routes/router';
 import { withSentryBoundary } from './shared/hoc/withSentryBoundary';
 import './App.css'
 import { StorageProvider } from './shared/hoc/useStorageContext';
-import { AuthProvider } from './(common)/features/user/hooks/useAuthContext';
+import { AuthProvider } from './shared/hoc/useAuthContext';
 
 const WrappedRouterProvider = withSentryBoundary(RouterProvider);
 
@@ -12,8 +12,9 @@ const WrappedRouterProvider = withSentryBoundary(RouterProvider);
 function App() {
   return (
     <StorageProvider>
-      <AuthProvider> <WrappedRouterProvider router={router} /></AuthProvider>
-
+      <AuthProvider>
+        <WrappedRouterProvider router={router} />
+      </AuthProvider>
     </StorageProvider>
   );
 }

@@ -1,7 +1,7 @@
-import { AuthServiceMock } from '../infrastructure/AuthServiceMock';
+import { UserServiceMock } from '../infrastructure/UserServiceMock';
 
-export const authContainer = {
-  authService: AuthServiceMock,
+export const userContainer = {
+  userService: UserServiceMock,
 };
 
-export type AuthContainer = typeof authContainer;
+export type UserContainer = typeof userContainer;

@@ -1,7 +1,7 @@
-import { authContainer } from '../../di/container';
+import { userContainer } from '../../di/container';
 
-export const loginUseCase = {
-  execute: async (email: string, password: string, role: string) => {
-    return await authContainer.authService.login(email, password, role);
+export const userUseCase = {
+  execute: async () => {
+    return await userContainer.userService.getUsers();
   },
 };

@@ -6,10 +6,9 @@ import {
   createRootRoute,
 } from '@tanstack/react-router';
 import { allTodosRoute } from '../(admin)/routes/router';
-import { loginRoute } from '../(common)/routes/router';
+import { loginRoute, userDetailsRoute } from '../(common)/routes/router';
 import { todosRoute } from '../(org)/routes/router';
-import { useStorage } from '../shared/hoc/useStorageContext';
-import type { UserProfile } from '../(common)/features/user/di/UserInterface';
+import { useAuthContext } from '../shared/hoc/useAuthContext';
 
 export const rootRoute = createRootRoute({
   component: () => <Outlet />,
@@ -36,11 +35,9 @@ export const RequireAuth = ({
   children: React.ReactNode;
   allowedRoles?: string[];
 }) => {
-  const storage = useStorage();
-  const user = storage.getItem<UserProfile>("user-profile");
+  const { getUserProfile } = useAuthContext();
+  const user = getUserProfile();
   const userRole = user?.role;
-
-  console.log('User:', user);
 
   if (!userRole) {
     return <Navigate to="/common/login" />;
@@ -56,10 +53,9 @@ const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
   component: () => {
-    const storage = useStorage();
-    const user = storage.getItem<UserProfile>("user-profile");
+    const { getUserProfile } = useAuthContext();
+    const user = getUserProfile();
     const userRole = user?.role;
-      console.log('User:', user);
     if (!userRole) {
       return <Navigate to="/common/login" />;
     }
@@ -104,7 +100,8 @@ export const orgRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   commonRoute.addChildren([
-    loginRoute
+    loginRoute,
+    userDetailsRoute,
   ]),
   adminRoute.addChildren([
     allTodosRoute
