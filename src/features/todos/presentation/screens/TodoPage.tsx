@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTodoViewModel } from '../../hooks/useTodoViewModel';
 import TodoItem from '../TodoItem';
 import './TodoPage.css';
-
+import IdleTimerContainer from '../../../../shared/components/IdleTimerContainer';
 const TodoPage = () => {
   const { todos, loading, addTodo, toggleTodo, clearTodos } = useTodoViewModel();
   const [title, setTitle] = useState('');
@@ -11,11 +11,12 @@ const TodoPage = () => {
     if (title.trim()) {
       addTodo(title);
       setTitle('');
-      // throw new Error('Simulated error for testing Sentry');
     }
   };
 
   return (
+    <>
+    <IdleTimerContainer  />
     <div className="todo-app">
       <div className="todo-header">
         <h1>ToDo App</h1>
@@ -34,18 +35,29 @@ const TodoPage = () => {
         
       </div>
 
-       {loading ? (
-        <p>Loading...</p>
-      ) : todos.length === 0 ? (
-        <p className="empty-message">No todos found.</p>
-      ) : (
-        <ul className="todo-list">
-          {todos.map(todo => (
-            <TodoItem key={todo.id} todo={todo} onToggle={() => toggleTodo(todo.id)} />
-          ))}
-        </ul>
-      )}
+       {(() => {
+          if (loading) {
+            return <p>Loading...</p>;
+          }
+
+          if (todos.length === 0) {
+            return <p className="empty-message">No todos found.</p>;
+          }
+
+          return (
+            <ul className="todo-list">
+              {todos.map(todo => (
+                <TodoItem
+                  key={todo.id}
+                  todo={todo}
+                  onToggle={() => toggleTodo(todo.id)}
+                />
+              ))}
+            </ul>
+          );
+        })()}
     </div>
+    </>
   );
 };
 
