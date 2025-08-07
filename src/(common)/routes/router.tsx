@@ -11,7 +11,7 @@ const loginRoute = createRoute({
   path: 'login',
   component: () => <LoginPage />,
 });
-
+// /common/user-details route
 const userDetailsRoute = createRoute({
   getParentRoute: () => commonRoute,
   path: 'user-details',
