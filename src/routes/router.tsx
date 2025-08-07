@@ -47,27 +47,30 @@ export const RequireAuth = ({
   }
   return <>{children}</>;
 };
+const IndexLanding = () => {
+  const { getUserProfile } = useAuthContext();
+  const user = getUserProfile();
+  const role = user?.role;
+
+  if (!role) {
+    return <Navigate to="/common/login" replace />;
+  }
+
+  switch (role) {
+    case 'admin':
+      return <Navigate to="/admin/alltodos" replace />;
+    case 'org':
+      return <Navigate to="/org/todos" replace />;
+    default:
+      return <Navigate to="/common/login" replace />;
+  }
+};
 
 // Index route: redirect to login if not logged in, or to role dashboard if logged in
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
-  component: () => function IndexRouteCheck() {
-    const { getUserProfile } = useAuthContext();
-    const user = getUserProfile();
-    const userRole = user?.role;
-    if (!userRole) {
-      return <Navigate to="/common/login" />;
-    }
-    switch (userRole) {
-      case 'admin':
-        return <Navigate to="/admin/alltodos" />;
-      case 'org':
-        return <Navigate to="/org/todos" />;
-      default:
-        return <Navigate to="/common/login" />;
-    }
-  },
+  component: () => <IndexLanding />,
 });
 
 // Login route

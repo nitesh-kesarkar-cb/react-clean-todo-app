@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import { useAuthContext } from '../../../../../shared/hoc/useAuthContext';
 import { useUserViewModel } from '../../hooks/useUserViewModal';
 import type { UserDetails } from '../../di/UserInterface';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shadcn/components/ui/button';
 import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent';
 import { UserRole } from '@/shared/_constants/enums';
+import LineGraph from '@/d3js/LineGraph';
 
 
 
@@ -19,7 +20,7 @@ const UserProfilePage = () => {
     if (user) {
       fetchAllUsers();
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const fetchAllUsers = async () => {
@@ -46,10 +47,10 @@ const UserProfilePage = () => {
     alert('Profile shared for the organization and admin!');
   };
 
- 
+
 
   return (
-    <div className="max-w-xl mx-auto mt-10 bg-white shadow-lg rounded-lg p-8">
+    <div className="mt-10 bg-white shadow-lg rounded-lg p-8">
       <h2 className="text-2xl font-bold mb-6 text-center">User Profile</h2>
       {user && <div>
         <div className="mb-4">
@@ -71,12 +72,14 @@ const UserProfilePage = () => {
         </div>
       </div>}
 
+      <LineGraph data={[10, 20, 30, 40, 50, 60]} width={600} height={300} marginTop={20} marginRight={20} marginBottom={20} marginLeft={20} />
+
       {user && <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">All Users</h3>
         {allUsers.length > 0 ? (
-          <ul className="space-y-4">
+          <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {allUsers.map((userDetail: UserDetails) => (
-              <li key={userDetail.id} className="p-4 border rounded-lg">
+              <li key={userDetail.id} className="p-4 border rounded-lg bg-white">
                 <div className="flex flex-col gap-2">
                   <span className="font-semibold">Name:</span>
                   <span>{userDetail.firstName}</span>
@@ -107,6 +110,8 @@ const UserProfilePage = () => {
           <p>No users found.</p>
         )}
       </div>}
+
+
 
 
 
