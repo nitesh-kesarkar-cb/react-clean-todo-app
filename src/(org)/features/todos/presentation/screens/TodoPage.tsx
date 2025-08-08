@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useTodoViewModel } from '../../hooks/useTodoViewModel'
 import TodoItem from '../_components/TodoItem'
 import IdleTimerContainer from '../../../../../shared/components/IdleTimerContainer'
+import Navbar from '@/shared/components/Navbar'
 const TodoPage = () => {
     const { todos, loading, addTodo, toggleTodo, clearTodos } =
         useTodoViewModel()
     const [title, setTitle] = useState('')
+    const menuItems = [{ label: 'Todos', href: '/org/todos' }]
 
     const handleAdd = () => {
         if (title.trim()) {
@@ -17,6 +19,9 @@ const TodoPage = () => {
     return (
         <>
             <IdleTimerContainer />
+            <div>
+                <Navbar menuItems={menuItems} />
+            </div>
             <div className="todo-app">
                 <div className="todo-header">
                     <h1>ToDo App</h1>
