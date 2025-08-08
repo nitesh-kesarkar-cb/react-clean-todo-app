@@ -4,12 +4,20 @@ import { commonRoute } from '../../routes/router'
 import { RequireRole } from '../../routes/guards'
 import LoginPage from '../features/auth/presentation/screens/LoginPage'
 import UserProfilePage from '../features/user/presentation/screens/UserProfile'
+import { MapPage } from '../features/map/MapPage'
 
 const loginRoute = createRoute({
     getParentRoute: () => commonRoute,
     path: 'login',
     component: () => <LoginPage />,
 })
+
+const mapRoute = createRoute({
+    getParentRoute: () => commonRoute,
+    path: 'map',
+    component: () => <MapPage />,
+})
+
 // /common/user-details route
 const userDetailsRoute = createRoute({
     getParentRoute: () => commonRoute,
@@ -26,4 +34,4 @@ const userDetailsRoute = createRoute({
 /// add rtt for user-list screen
 /// add , edit, delete, csv/pdf export,
 
-export { loginRoute, userDetailsRoute }
+export { loginRoute, userDetailsRoute, mapRoute }
