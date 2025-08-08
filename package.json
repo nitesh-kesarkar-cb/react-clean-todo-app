@@ -16,6 +16,7 @@
         "husky-install": "husky install"
     },
     "dependencies": {
+        "@radix-ui/react-navigation-menu": "^1.2.13",
         "@radix-ui/react-slot": "^1.2.3",
         "@react-google-maps/api": "^2.20.7",
         "@sentry/react": "^9.42.1",
