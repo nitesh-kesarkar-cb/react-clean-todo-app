@@ -40,7 +40,7 @@ const GraphPage = () => {
 
       <h2 className="text-2xl font-bold mb-6 text-center">Graphs</h2>
 
-      <Tabs defaultValue="shadcn">
+      <Tabs defaultValue="shadcn" className="w-full">
         <TabsList>
           <TabsTrigger value="d3js">D3.js</TabsTrigger>
           <TabsTrigger value="shadcn">Shadcn</TabsTrigger>
@@ -51,61 +51,61 @@ const GraphPage = () => {
               <h3 className="text-xl font-semibold mb-4 text-center">D3JS Activity Graphs</h3>
               <div className=" gap-8">
                 {lineGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  lineGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Line Graph...</span>
                   </div>
                 ) : (
-                  lineGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <D3JsLineGraph data={lineGraphData.data} title={lineGraphData.title} />
+                  lineGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <D3JsLineGraph data={lineGraphData.data} title={lineGraphData.title} height={400} />
                   </div>
                 )}
                 {barGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  barGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Bar Chart ...</span>
                   </div>
                 ) : (
-                  barGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <D3JsBarGraph dataUrl={barGraphData.dataUrl as string} title={barGraphData.title} />
+                  barGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <D3JsBarGraph dataUrl={barGraphData.dataUrl as string} title={barGraphData.title} height={400}/>
                   </div>
                 )}
 
                 {pieGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  pieGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Pie Chart ...</span>
                   </div>
                 ) : (
-                  pieGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <D3JsPieGraph data={pieGraphData.pieData} title={pieGraphData.title} />
+                  pieGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <D3JsPieGraph data={pieGraphData.pieData} title={pieGraphData.title}  height={400}/>
                   </div>
                 )}
 
                 {histogramGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  histogramGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Histogram Chart ...</span>
                   </div>
                 ) : (
-                  histogramGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <D3JsHistogramGraph data={histogramGraphData} title="Histogram Graph" />
+                  histogramGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <D3JsHistogramGraph data={histogramGraphData} title="Histogram Graph" height={400} />
                   </div>
                 )}
 
                 {donutGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  donutGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Donut Chart ...</span>
                   </div>
                 ) : (
-                  donutGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <D3JsDonutGraph data={donutGraphData.data} title={donutGraphData.title} />
+                  donutGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <D3JsDonutGraph data={donutGraphData.data} title={donutGraphData.title} height={400} />
                   </div>
                 )}
 
                 {scatterGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  scatterGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Scatter Chart ...</span>
                   </div>
                 ) : (
-                  scatterGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <D3JsScatterGraph data={scatterGraphData.data} title={scatterGraphData.title} />
+                  scatterGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <D3JsScatterGraph data={scatterGraphData.data} title={scatterGraphData.title} height={400} />
                   </div>
                 )}
 
@@ -120,61 +120,61 @@ const GraphPage = () => {
               <h3 className="text-xl font-semibold mb-4 text-center">ShadCN Activity Graphs</h3>
               <div className=" gap-8">
                 {lineGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Line Graph...</span>
                   </div>
                 ) : (
-                  lineGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <RechartsLineGraph data={lineGraphData.data} title={lineGraphData.title} />
+                  lineGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <RechartsLineGraph data={lineGraphData.data} title={lineGraphData.title} height={400} />
                   </div>
                 )}
                 {barGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Bar Chart ...</span>
                   </div>
                 ) : (
-                  barGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <RechartsBarGraph dataUrl={barGraphData.dataUrl as string} title={barGraphData.title} />
+                  barGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <RechartsBarGraph dataUrl={barGraphData.dataUrl as string} title={barGraphData.title} height={400} />
                   </div>
                 )}
 
                 {pieGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Pie Chart ...</span>
                   </div>
                 ) : (
-                  pieGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <RechartsPieGraph data={pieGraphData.pieData} title={pieGraphData.title} />
+                  pieGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <RechartsPieGraph data={pieGraphData.pieData} title={pieGraphData.title}  height={400}/>
                   </div>
                 )}
 
                 {histogramGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Histogram Chart ...</span>
                   </div>
                 ) : (
-                  histogramGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <RechartsHistogramGraph data={histogramGraphData.bins} title="Histogram Graph" />
+                  histogramGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <RechartsHistogramGraph data={histogramGraphData.bins} title="Histogram Graph" height={400} />
                   </div>
                 )}
 
                 {donutGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Donut Chart ...</span>
                   </div>
                 ) : (
-                  donutGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <RechartsDonutGraph data={donutGraphData.data} title={donutGraphData.title} />
+                  donutGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <RechartsDonutGraph data={donutGraphData.data} title={donutGraphData.title} height={400}/>
                   </div>
                 )}
 
                 {scatterGraphLoading ? (
-                  <div className="flex items-center justify-center w-full h-full p-6 bg-gray-100 rounded-lg">
+                  <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                     <span className="text-gray-500">Loading Scatter Chart ...</span>
                   </div>
                 ) : (
-                  scatterGraphData && <div className="bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                    <RechartsScatterGraph data={scatterGraphData.data} title={scatterGraphData.title} />
+                  scatterGraphData && <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                    <RechartsScatterGraph data={scatterGraphData.data} title={scatterGraphData.title} height={400}/>
                   </div>
                 )}
 

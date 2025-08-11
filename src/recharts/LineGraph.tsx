@@ -25,11 +25,10 @@ import {
 
 type LineGraphProps = {
     data: number[]
-    width?: number
-    height?: number
     title?: string
     xLabel?: string
     yLabel?: string
+    height: number
 }
 
 const chartConfig = (yLabel: string) => ({
@@ -42,11 +41,10 @@ const chartConfig = (yLabel: string) => ({
 
 export default function LineGraph({
     data,
-    width = 640,
-    height = 400,
     title = "Line Graph",
     xLabel = "X Axis",
     yLabel = "Y Axis",
+    height
 }: LineGraphProps) {
     const chartData = data.map((value, index) => ({
         [xLabel]: index + 1,
@@ -54,15 +52,14 @@ export default function LineGraph({
     }))
 
     return (
-        <Card>
+        <Card className="w-full">
             <CardHeader>
                 <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig(yLabel)} style={{ width, height }}>
+                <ChartContainer config={chartConfig(yLabel)} style={{ width: "100%", height }}>
                     <LineChart
                         accessibilityLayer
-                        width={width}
                         height={height}
                         data={chartData}
                         margin={{ left: 12, right: 12, bottom: 40 }}
@@ -70,8 +67,8 @@ export default function LineGraph({
                         <CartesianGrid vertical={false} />
                         <XAxis
                             dataKey={xLabel}
-                            tickLine={false}
-                            axisLine={false}
+                            tickLine={true}
+                            axisLine={true}
                             tickMargin={8}
                             label={
                                 <Label

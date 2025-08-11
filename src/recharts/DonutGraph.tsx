@@ -1,20 +1,9 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/components/ui/card";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LabelList } from "recharts";
-import clsx from "clsx";
 
 interface DonutGraphProps {
-    width?: number;
-    height?: number;
     title?: string;
-    className?: string;
-    marginTop?: number;
-    marginRight?: number;
-    marginBottom?: number;
-    marginLeft?: number;
-    color?: string;
-    tooltipColor?: string;
-    innerSize?: string;
-    labelColor?: string; // <-- Add this prop
+    height: number;
     data: {
         name: string;
         value: number;
@@ -28,41 +17,23 @@ const DEFAULT_COLORS = [
 
 export default function DonutGraph({
     title,
-    innerSize = "60%",
     data,
-    width = 640,
-    height = 400,
-    className,
-    marginTop = 0,
-    marginRight = 0,
-    marginBottom = 0,
-    marginLeft = 0,
-    color,
-    tooltipColor = "#fff",
-    labelColor = "#222", // <-- Default label color
+    height,
 }: DonutGraphProps) {
-    let innerRadius: number | string = 0;
-    if (innerSize.endsWith("%")) {
-        const percent = parseFloat(innerSize);
-        innerRadius = `${percent}%`;
-    } else {
-        innerRadius = parseFloat(innerSize);
-    }
-
+    const innerRadius: number | string = "50%";
     const total = data.reduce((sum, d) => sum + d.value, 0);
-
-    const COLORS = color ? [color, ...DEFAULT_COLORS.slice(1)] : DEFAULT_COLORS;
+    const COLORS = DEFAULT_COLORS;
 
     return (
-        <Card className={clsx("w-fit p-0", className)} style={{ marginTop, marginRight, marginBottom, marginLeft }}>
+        <Card className="w-full p-0" style={{ margin: 0 }}>
             <CardHeader className="pb-2">
                 {title && (
                     <CardTitle className="text-center text-lg font-bold">{title}</CardTitle>
                 )}
             </CardHeader>
-            <CardContent className="flex justify-center items-center p-0">
-                <div style={{ position: "relative", width, height }}>
-                    <ResponsiveContainer width="100%" height="100%">
+            <CardContent className="flex justify-center items-center p-0 w-full">
+                <div style={{ width: '100%', height, position: 'relative' }}>
+                    <ResponsiveContainer width="100%" height={height}>
                         <PieChart>
                             <Pie
                                 data={data}
@@ -77,7 +48,6 @@ export default function DonutGraph({
                                 paddingAngle={2}
                                 stroke="#fff"
                                 strokeWidth={2}
-                                // label={({ name }) => name}
                                 labelLine={false}
                             >
                                 {data.map((_, index) => (
@@ -86,12 +56,12 @@ export default function DonutGraph({
                                 <LabelList
                                     dataKey="name"
                                     position="outside"
-                                    color={labelColor}
+                                    color={"#222"}
                                 />
                             </Pie>
                             <Tooltip
                                 contentStyle={{
-                                    background: tooltipColor,
+                                    background: "#fff",
                                     color: "#fff",
                                     border: "none",
                                     borderRadius: 8,

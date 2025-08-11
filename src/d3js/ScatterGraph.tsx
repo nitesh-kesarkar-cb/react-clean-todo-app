@@ -1,34 +1,43 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 
 type ScatterGraphProps = {
     data: { date: number; value: number }[];
     title?: string;
-    width?: number;
-    height?: number;
-    marginTop?: number;
-    marginRight?: number;
-    marginBottom?: number;
-    marginLeft?: number;
+    height: number;
     color?: string;
     tooltipColor?: string;
 };
 
+const marginTop = 30;
+const marginRight = 30;
+const marginBottom = 40;
+const marginLeft = 50;
+
 export default function ScatterGraph({
     data,
-    width = 640,
-    height = 400,
-    marginTop = 40,
-    marginRight = 40,
-    marginBottom = 60,
-    marginLeft = 60,
-    color = 'steelblue',
-    tooltipColor = 'rgba(0,0,0,0.8)',
+    height,
     title,
+    color = '#007bff',
+    tooltipColor = '#222',
 }: ScatterGraphProps) {
+    const containerRef = useRef<HTMLDivElement | null>(null);
     const svgRef = useRef<SVGSVGElement | null>(null);
+    const [width, setWidth] = useState(400);
 
     useEffect(() => {
+        function handleResize() {
+            if (containerRef.current) {
+                setWidth(containerRef.current.offsetWidth);
+            }
+        }
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    useEffect(() => {
+        if (!svgRef.current) return;
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
 
@@ -98,28 +107,16 @@ export default function ScatterGraph({
         return () => {
             tooltip.remove();
         };
-    }, [
-        data,
-        width,
-        height,
-        marginTop,
-        marginRight,
-        marginBottom,
-        marginLeft,
-        color,
-        tooltipColor,
-    ]);
+    }, [data, width, height, color, tooltipColor]);
 
     return (
-        <div className="flex flex-col items-center bg-white p-4 rounded shadow" style={{ position: 'relative' }}>
-            {title && (
-                <h2 className="text-xl font-semibold mb-2 text-gray-800">{title}</h2>
-            )}
+        <div ref={containerRef} className="w-full">
+            {title && <h3 className="text-lg font-semibold mb-4 text-center">{title}</h3>}
             <svg
                 ref={svgRef}
                 width={width}
                 height={height}
-                className="bg-gray-50 rounded"
+                style={{ background: 'white' }}
             ></svg>
         </div>
     );

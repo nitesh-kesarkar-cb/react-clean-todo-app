@@ -4,25 +4,23 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/shadcn/components/ui
 type ScatterGraphProps = {
     data: { date: number; value: number }[];
     title?: string;
-    width?: number;
-    height?: number;
+    height: number;
 };
 
 export default function ScatterGraph({
     data,
-    width = 640,
-    height = 400,
     title,
+    height
 }: ScatterGraphProps) {
     return (
-        <Card className="p-4 bg-white rounded shadow flex flex-col items-center">
+        <Card className="w-full">
             {title && (
                 <CardHeader>
                     <CardTitle className="text-xl font-semibold mb-2 text-gray-800">{title}</CardTitle>
                 </CardHeader>
             )}
             <CardContent className="w-full flex justify-center">
-                <ResponsiveContainer width={width} height={height}>
+                <ResponsiveContainer width="100%" height={height}>
                     <ScatterChart
                         margin={{ top: 40, right: 30, bottom: 40, left: 50 }}
                     >

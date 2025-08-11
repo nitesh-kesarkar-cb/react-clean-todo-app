@@ -6,10 +6,9 @@ export interface PieGraphProps {
         label: string;
         value: number;
     }[];
-    width?: number;
-    height?: number;
     innerRadius?: number;
     title?: string;
+    height: number;
 }
 
 const COLORS = [
@@ -18,13 +17,12 @@ const COLORS = [
 
 export default function PieGraph({
     data,
-    width = 640,
-    height = 400,
     innerRadius = 0,
     title,
+    height
 }: PieGraphProps) {
     return (
-        <Card className="w-full max-w-xl mx-auto">
+        <Card className="w-full">
             {title && (
                 <CardHeader>
                     <CardTitle>{title}</CardTitle>
@@ -40,7 +38,6 @@ export default function PieGraph({
                             cx="50%"
                             cy="50%"
                             innerRadius={innerRadius}
-                            outerRadius={Math.min(width, height) / 2 - 40}
                             paddingAngle={2}
                             label={({ label }) => label}
                         >
