@@ -3,7 +3,9 @@ import {
     useContext,
     useEffect,
     useState,
+    type Dispatch,
     type ReactNode,
+    type SetStateAction,
 } from 'react'
 import type { UserProfile } from '../../(common)/features/user/di/UserInterface'
 import { useStorage } from './useStorageContext'
@@ -11,6 +13,7 @@ import { useStorage } from './useStorageContext'
 interface AuthContextType {
     user: UserProfile | null
     getUserProfile: () => UserProfile | null
+    setUser: Dispatch<SetStateAction<UserProfile | null>>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -33,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-        <AuthContext.Provider value={{ user, getUserProfile }}>
+        <AuthContext.Provider value={{ user, getUserProfile, setUser }}>
             {children}
         </AuthContext.Provider>
     )
