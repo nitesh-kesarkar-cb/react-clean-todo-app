@@ -1,0 +1,6 @@
+export { default as D3JsBarGraph } from './BarGraph';
+export { default as D3JsDonutGraph } from './DonutGraph';
+export { default as D3JsLineGraph } from './LineGraph';
+export { default as D3JsScatterGraph } from './ScatterGraph';   
+export { default as D3JsPieGraph } from './PieGraph';
+export { default as D3JsHistogramGraph } from './HistogramGraph';

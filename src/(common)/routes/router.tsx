@@ -5,7 +5,12 @@ import {
 import { commonRoute, RequireAuth } from '../../routes/router';
 import LoginPage from '../features/auth/presentation/screens/LoginPage';
 import UserProfilePage from '../features/user/presentation/screens/UserProfile';
+import Graph from '../features/graphs/presentation/screens/Graph';
 
+
+/// these are all abac
+
+/// login route
 const loginRoute = createRoute({
   getParentRoute: () => commonRoute,
   path: 'login',
@@ -18,11 +23,10 @@ const userDetailsRoute = createRoute({
   component: () => <RequireAuth allowedRoles={['admin', 'org']}><UserProfilePage /></RequireAuth>,
 });
 
+const graphListRoute = createRoute({
+  getParentRoute: () => commonRoute,
+  path: 'graphs',
+  component: () => <RequireAuth allowedRoles={['admin', 'org', 'common']}><Graph /></RequireAuth>,
+});
 
-
-//// user-list screen -> role specific access, and role specific actions
-
-/// add rtt for user-list screen
-/// add , edit, delete, csv/pdf export,
-
-export { loginRoute, userDetailsRoute };
+export { loginRoute, userDetailsRoute, graphListRoute };

@@ -6,7 +6,7 @@ import {
   createRootRoute,
 } from '@tanstack/react-router';
 import { allTodosRoute } from '../(admin)/routes/router';
-import { loginRoute, userDetailsRoute } from '../(common)/routes/router';
+import { graphListRoute, loginRoute, userDetailsRoute } from '../(common)/routes/router';
 import { todosRoute } from '../(org)/routes/router';
 import { useAuthContext } from '../shared/hoc/useAuthContext';
 
@@ -105,6 +105,7 @@ const routeTree = rootRoute.addChildren([
   commonRoute.addChildren([
     loginRoute,
     userDetailsRoute,
+    graphListRoute
   ]),
   adminRoute.addChildren([
     allTodosRoute

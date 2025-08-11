@@ -5,8 +5,6 @@ import type { UserDetails } from '../../di/UserInterface';
 import { Button } from '@/shadcn/components/ui/button';
 import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent';
 import { UserRole } from '@/shared/_constants/enums';
-// import LineGraph from '@/d3js/LineGraph';
-
 
 
 const UserProfilePage = () => {
@@ -72,7 +70,6 @@ const UserProfilePage = () => {
         </div>
       </div>}
 
-      {/* <LineGraph data={[10, 20, 30, 40, 50, 60]} width={600} height={300} marginTop={20} marginRight={20} marginBottom={20} marginLeft={20} /> */}
 
       {user && <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">All Users</h3>
@@ -110,12 +107,6 @@ const UserProfilePage = () => {
           <p>No users found.</p>
         )}
       </div>}
-
-
-
-
-
-
     </div>
   );
 };

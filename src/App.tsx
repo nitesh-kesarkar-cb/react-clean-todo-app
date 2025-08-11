@@ -5,6 +5,7 @@ import './i18n'
 import './App.css'
 import { StorageProvider } from './shared/hoc/useStorageContext';
 import { AuthProvider } from './shared/hoc/useAuthContext';
+import { ReactQueryClientProvider } from './shared/hoc/reactQueryClient'
 
 const WrappedRouterProvider = withSentryBoundary(RouterProvider)
 
@@ -12,9 +13,11 @@ const WrappedRouterProvider = withSentryBoundary(RouterProvider)
 function App() {
   return (
     <StorageProvider>
-      <AuthProvider>
-        <WrappedRouterProvider router={router} />
-      </AuthProvider>
+      <ReactQueryClientProvider>
+        <AuthProvider>
+          <WrappedRouterProvider router={router} />
+        </AuthProvider>
+      </ReactQueryClientProvider>
     </StorageProvider>
   );
 }
