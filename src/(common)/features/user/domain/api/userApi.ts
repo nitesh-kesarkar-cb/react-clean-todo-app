@@ -1,7 +1,11 @@
+import axios from 'axios';
+
 export const getUsersApi = async (): Promise<unknown> => {
-    const response = await fetch('https://dummyjson.com/users');
-    if (!response.ok) {
+    try {
+        const response = await axios.get('https://dummyjson.com/users');
+        return response.data;
+    } catch (error) {
+        console.error(error);
         throw new Error('Failed to fetch user');
     }
-    return response.json();
 }

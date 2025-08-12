@@ -1,4 +1,5 @@
 import type { TodoService } from '../../domain/services/TodoService';
+import axios from 'axios';
 
 const API_KEY = import.meta.env.VITE_CRUDCRUD_API_KEY;
 const BASE_URL = `https://crudcrud.com/api/${API_KEY}/todos`;
@@ -11,8 +12,8 @@ export type ApiTodo = {
 
 export const TodoServiceImpl: TodoService = {
   async getTodos() {
-    const res = await fetch(BASE_URL);
-    const data = await res.json();
+    const res = await axios.get(BASE_URL);
+    const data = res.data;
     return data.map((todo: ApiTodo) => ({
       id: todo._id,
       title: todo.title,
@@ -20,12 +21,8 @@ export const TodoServiceImpl: TodoService = {
     }));
   },
   async addTodo(title: string) {
-    const res = await fetch(BASE_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, completed: false }),
-    });
-    const data = await res.json();
+    const res = await axios.post(BASE_URL, { title, completed: false });
+    const data = res.data;
     return {
       id: data._id,
       title: data.title,
@@ -33,25 +30,21 @@ export const TodoServiceImpl: TodoService = {
     };
   },
   async toggleTodo(id: string) {
-    const res = await fetch(`${BASE_URL}/${id}`);
-    const todo = await res.json();
-   const updated = {
-    title: todo.title,
-    completed: !todo.completed,
-  };
-    await fetch(`${BASE_URL}/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(updated),
-    });
+    const res = await axios.get(`${BASE_URL}/${id}`);
+    const todo = res.data;
+    const updated = {
+      title: todo.title,
+      completed: !todo.completed,
+    };
+    await axios.put(`${BASE_URL}/${id}`, updated);
   },
 
   async clearTodos() {
-    const res = await fetch(BASE_URL);
-    const data = await res.json();
+    const res = await axios.get(BASE_URL);
+    const data = res.data;
     await Promise.all(
       data.map((todo: unknown) =>
-        fetch(`${BASE_URL}/${(todo as { _id: string })._id}`, { method: 'DELETE' })
+        axios.delete(`${BASE_URL}/${(todo as { _id: string })._id}`)
       )
     );
   }

@@ -1,11 +1,16 @@
 import { createRoute } from '@tanstack/react-router'
 
-import { commonRoute } from '../../routes/router'
+import { commonRoute } from '../../routes/router';
+import LoginPage from '../features/auth/presentation/screens/LoginPage';
+import UserProfilePage from '../features/user/presentation/screens/UserProfile';
+import Graph from '../features/graphs/presentation/screens/Graph';
 import { RequireRole } from '../../routes/guards'
-import LoginPage from '../features/auth/presentation/screens/LoginPage'
-import UserProfilePage from '../features/user/presentation/screens/UserProfile'
 import { MapPage } from '../features/map/MapPage'
 
+
+/// these are all abac
+
+/// login route
 const loginRoute = createRoute({
     getParentRoute: () => commonRoute,
     path: 'login',
@@ -22,16 +27,17 @@ const mapRoute = createRoute({
 const userDetailsRoute = createRoute({
     getParentRoute: () => commonRoute,
     path: 'user-details',
-    component: () => (
-        <RequireRole allowedRoles={['admin', 'org']}>
-            <UserProfilePage />
-        </RequireRole>
-    ),
-})
+    component: () => <RequireRole allowedRoles={['admin', 'org']}>
+        <UserProfilePage />
+    </RequireRole>,
+});
 
-//// user-list screen -> role specific access, and role specific actions
+const graphListRoute = createRoute({
+    getParentRoute: () => commonRoute,
+    path: 'graphs',
+    component: () => <RequireRole allowedRoles={['admin', 'org', 'common']}><Graph /></RequireRole>,
+});
 
-/// add rtt for user-list screen
-/// add , edit, delete, csv/pdf export,
+export { loginRoute, userDetailsRoute, graphListRoute, mapRoute };
 
-export { loginRoute, userDetailsRoute, mapRoute }
+

@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
-import { useAuthContext } from '../../../../../shared/hoc/useAuthContext'
-import { useUserViewModel } from '../../hooks/useUserViewModal'
-import type { UserDetails } from '../../di/UserInterface'
-import { Button } from '@/shadcn/components/ui/button'
-import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent'
-import { UserRole } from '@/shared/_constants/enums'
+import { useEffect, useState } from 'react';
+import { useAuthContext } from '../../../../../shared/hoc/useAuthContext';
+import { useUserViewModel } from '../../hooks/useUserViewModal';
+import type { UserDetails } from '../../di/UserInterface';
+import { Button } from '@/shadcn/components/ui/button';
+import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent';
+import { UserRole } from '@/shared/_constants/enums';
+
 
 const UserProfilePage = () => {
     const { user } = useAuthContext()
@@ -156,4 +157,4 @@ const UserProfilePage = () => {
     )
 }
 
-export default UserProfilePage
+export default UserProfilePage;
