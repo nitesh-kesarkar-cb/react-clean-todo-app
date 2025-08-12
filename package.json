@@ -11,9 +11,8 @@
     "lint:fix": "eslint --fix \"src/**/*.{js,jsx,ts,tsx}\"",
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,css,md}\" --config ./.prettierrc.json",
     "prettier": "prettier --check src",
-    "lint-staged": "lint-staged --config lint-staged.js",
     "prepare": "husky",
-    "husky-install": "husky install"
+    "pre-commit": "lint-staged"
   },
   "dependencies": {
     "@radix-ui/react-navigation-menu": "^1.2.13",
@@ -68,5 +67,16 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.0.4"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
