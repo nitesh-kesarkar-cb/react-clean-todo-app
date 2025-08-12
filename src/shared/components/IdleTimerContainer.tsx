@@ -8,7 +8,7 @@ const IdleTimerContainer = () => {
 
     const onIdle = () => {
         console.log('User is idle. Logging out')
-        navigate({ to: '/login' })
+        navigate({ to: '/common/login' })
     }
 
     useIdleTimer({
