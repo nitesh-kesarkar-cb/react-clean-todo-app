@@ -17,6 +17,8 @@ import {
     RechartsScatterGraph,
 } from '@/shared/components/recharts'
 
+import { VisxBarGraph, VisxLineGraph } from '@/shared/components/visx'
+
 import { useGraphViewModel } from '../../hooks/useGraphViewModal'
 
 import {
@@ -76,6 +78,7 @@ const GraphPage = () => {
                 <TabsList>
                     <TabsTrigger value="d3js">D3.js</TabsTrigger>
                     <TabsTrigger value="shadcn">Shadcn</TabsTrigger>
+                    <TabsTrigger value="airbnb">Airbnb</TabsTrigger>
                 </TabsList>
                 <TabsContent value="d3js">
                     <div className="space-y-8">
@@ -231,6 +234,131 @@ const GraphPage = () => {
                                         barGraphData && (
                                             <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
                                                 <RechartsBarGraph
+                                                    dataUrl={
+                                                        barGraphData.dataUrl as string
+                                                    }
+                                                    title={barGraphData.title}
+                                                    height={400}
+                                                />
+                                            </div>
+                                        )
+                                    )}
+
+                                    {pieGraphLoading ? (
+                                        <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                            <span className="text-gray-500">
+                                                Loading Pie Chart ...
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        pieGraphData && (
+                                            <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                                <RechartsPieGraph
+                                                    data={pieGraphData.pieData}
+                                                    title={pieGraphData.title}
+                                                    height={400}
+                                                />
+                                            </div>
+                                        )
+                                    )}
+
+                                    {histogramGraphLoading ? (
+                                        <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                            <span className="text-gray-500">
+                                                Loading Histogram Chart ...
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        histogramGraphData && (
+                                            <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                                <RechartsHistogramGraph
+                                                    data={
+                                                        histogramGraphData.bins
+                                                    }
+                                                    title="Histogram Graph"
+                                                    height={400}
+                                                />
+                                            </div>
+                                        )
+                                    )}
+
+                                    {donutGraphLoading ? (
+                                        <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                            <span className="text-gray-500">
+                                                Loading Donut Chart ...
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        donutGraphData && (
+                                            <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                                <RechartsDonutGraph
+                                                    data={donutGraphData.data}
+                                                    title={donutGraphData.title}
+                                                    height={400}
+                                                />
+                                            </div>
+                                        )
+                                    )}
+
+                                    {scatterGraphLoading ? (
+                                        <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                            <span className="text-gray-500">
+                                                Loading Scatter Chart ...
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        scatterGraphData && (
+                                            <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                                <RechartsScatterGraph
+                                                    data={scatterGraphData.data}
+                                                    title={
+                                                        scatterGraphData.title
+                                                    }
+                                                    height={400}
+                                                />
+                                            </div>
+                                        )
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </TabsContent>
+                <TabsContent value="airbnb">
+                    <div className="space-y-8">
+                        <div className="space-y-8">
+                            <div className="mt-10">
+                                <h3 className="text-xl font-semibold mb-4 text-center">
+                                    Airbnb Activity Graphs
+                                </h3>
+                                <div className=" gap-8">
+                                    {lineGraphLoading ? (
+                                        <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                            <span className="text-gray-500">
+                                                Loading Line Graph...
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        lineGraphData && (
+                                            <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                                <VisxLineGraph
+                                                    data={lineGraphData.data}
+                                                    title={lineGraphData.title}
+                                                    height={400}
+                                                />
+                                            </div>
+                                        )
+                                    )}
+                                    {barGraphLoading ? (
+                                        <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                            <span className="text-gray-500">
+                                                Loading Bar Chart ...
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        barGraphData && (
+                                            <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
+                                                <VisxBarGraph
                                                     dataUrl={
                                                         barGraphData.dataUrl as string
                                                     }
