@@ -1,27 +1,18 @@
-import {
-    CartesianGrid,
-    Line,
-    LineChart,
-    XAxis,
-    YAxis,
-    Label,
-} from "recharts"
+import { CartesianGrid, Line, LineChart, XAxis, YAxis, Label } from 'recharts'
 
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
-} from "@/shadcn/components/ui/card"
+} from '@/shadcn/components/ui/card'
 
 import {
     type ChartConfig,
     ChartContainer,
     ChartTooltip,
     ChartTooltipContent,
-    ChartLegend,
-    ChartLegendContent,
-} from "@/shadcn/components/ui/chart"
+} from '@/shadcn/components/ui/chart'
 
 type LineGraphProps = {
     data: number[]
@@ -31,20 +22,20 @@ type LineGraphProps = {
     height: number
 }
 
-const chartConfig = (yLabel: string) => ({
-
-    [yLabel]: {
-        label: yLabel,
-        color: "var(--chart-1)",
-    },
-}) satisfies ChartConfig
+const chartConfig = (yLabel: string) =>
+    ({
+        [yLabel]: {
+            label: yLabel,
+            color: 'var(--chart-1)',
+        },
+    }) satisfies ChartConfig
 
 export default function LineGraph({
     data,
-    title = "Line Graph",
-    xLabel = "X Axis",
-    yLabel = "Y Axis",
-    height
+    title = 'Line Graph',
+    xLabel = 'X Axis',
+    yLabel = 'Y Axis',
+    height,
 }: LineGraphProps) {
     const chartData = data.map((value, index) => ({
         [xLabel]: index + 1,
@@ -57,7 +48,11 @@ export default function LineGraph({
                 <CardTitle>{title}</CardTitle>
             </CardHeader>
             <CardContent>
-                <ChartContainer config={chartConfig(yLabel)} style={{ width: "100%", height }}>
+                <ChartContainer
+                    config={chartConfig(yLabel)}
+                    className="w-full p-0"
+                    style={{ height }}
+                >
                     <LineChart
                         accessibilityLayer
                         height={height}
@@ -87,8 +82,9 @@ export default function LineGraph({
                                 />
                             }
                         />
-                        <ChartTooltip content={<ChartTooltipContent hideLabel />} />
-                        <ChartLegend content={<ChartLegendContent />} />
+                        <ChartTooltip
+                            content={<ChartTooltipContent hideLabel />}
+                        />
                         <Line
                             dataKey={yLabel}
                             type="natural"

@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useAuthContext } from '../../../../../shared/hoc/useAuthContext';
-import { useUserViewModel } from '../../hooks/useUserViewModal';
-import type { UserDetails } from '../../di/UserInterface';
-import { Button } from '@/shadcn/components/ui/button';
-import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent';
-import { UserRole } from '@/shared/_constants/enums';
-
+import { useEffect, useState } from 'react'
+import { useAuthContext } from '../../../../../shared/hoc/useAuthContext'
+import { useUserViewModel } from '../../hooks/useUserViewModal'
+import type { UserDetails } from '../../di/UserInterface'
+import { Button } from '@/shadcn/components/ui/button'
+import { RoleBasedAccessComponent } from '@/shared/hoc/useAuthComponent'
+import { UserRole } from '@/shared/_constants/enums'
 
 const UserProfilePage = () => {
     const { user } = useAuthContext()
@@ -70,8 +69,6 @@ const UserProfilePage = () => {
                     </div>
                 </div>
             )}
-
-            {/* <LineGraph data={[10, 20, 30, 40, 50, 60]} width={600} height={300} marginTop={20} marginRight={20} marginBottom={20} marginLeft={20} /> */}
 
             {user && (
                 <div className="mt-8">
@@ -157,4 +154,4 @@ const UserProfilePage = () => {
     )
 }
 
-export default UserProfilePage;
+export default UserProfilePage
