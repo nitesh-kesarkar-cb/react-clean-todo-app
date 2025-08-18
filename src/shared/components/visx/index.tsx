@@ -1,2 +1,6 @@
 export { default as VisxBarGraph } from './Bargraph'
 export { default as VisxLineGraph } from './LineGraph'
+export { default as VisxDonutGraph } from './DonutGraph'
+export { default as VisxPieGraph } from './PieGraph'
+export { default as VisxHistogramGraph } from './HistogramGraph'
+export { default as VisxScatterPlot } from './ScatterGraph'

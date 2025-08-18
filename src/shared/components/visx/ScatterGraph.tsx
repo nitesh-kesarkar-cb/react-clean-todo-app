@@ -1,29 +1,27 @@
-import { useEffect, useRef, useState } from 'react'
-import { max } from '@visx/vendor/d3-array'
-import * as allCurves from '@visx/curve'
+'use client'
+
+import { useMemo, useState, useRef, useEffect } from 'react'
 import { Group } from '@visx/group'
-import { LinePath } from '@visx/shape'
+import { Circle } from '@visx/shape'
 import { scaleLinear } from '@visx/scale'
-import { AxisBottom, AxisLeft } from '@visx/axis'
 import { useTooltip, Tooltip } from '@visx/tooltip'
 import { localPoint } from '@visx/event'
+import { AxisBottom, AxisLeft } from '@visx/axis'
 
-type LineGraphProps = {
-    data: number[]
+type ScatterGraphProps = {
+    data: { date: number; value: number }[]
     title?: string
-    xLabel?: string
-    yLabel?: string
     height: number
 }
 
-export default function LineGraph({
+const pointColor = '#3b82f6'
+
+export default function ScatterGraph({
     data,
-    title = 'Line Graph',
-    xLabel = 'X Axis',
-    yLabel = 'Y Axis',
+    title,
     height,
-}: LineGraphProps) {
-    const containerRef = useRef<HTMLDivElement>(null)
+}: ScatterGraphProps) {
+    const containerRef = useRef<HTMLDivElement | null>(null)
     const [width, setWidth] = useState(0)
 
     const {
@@ -35,8 +33,12 @@ export default function LineGraph({
         hideTooltip,
     } = useTooltip<number>()
 
+    // Responsive resize
     useEffect(() => {
         if (!containerRef.current) return
+        const rect = containerRef.current.getBoundingClientRect()
+        if (rect.width) setWidth(rect.width)
+
         const observer = new ResizeObserver((entries) => {
             for (const entry of entries) {
                 setWidth(entry.contentRect.width)
@@ -46,42 +48,86 @@ export default function LineGraph({
         return () => observer.disconnect()
     }, [])
 
-    const margin = { top: 50, right: 30, bottom: 60, left: 70 }
+    // Margins
+    const margin = { top: 20, right: 20, bottom: 50, left: 60 }
     const innerWidth = Math.max(0, width - margin.left - margin.right)
     const innerHeight = Math.max(0, height - margin.top - margin.bottom)
 
-    const xScale = scaleLinear({
-        domain: [0, data.length - 1],
-        range: [0, innerWidth],
-    })
+    // Scales
+    const xMax = data.length > 0 ? Math.max(...data.map((d) => d.date)) : 1
+    const yMax = data.length > 0 ? Math.max(...data.map((d) => d.value)) : 1
 
-    const yScale = scaleLinear({
-        domain: [0, max(data) ?? 0],
-        range: [innerHeight, 0],
-        nice: true,
-    })
+    const xScale = useMemo(
+        () =>
+            scaleLinear<number>({
+                domain: [0, xMax * 1.1],
+                range: [0, innerWidth],
+                nice: true,
+            }),
+        [innerWidth, xMax]
+    )
+
+    const yScale = useMemo(
+        () =>
+            scaleLinear<number>({
+                domain: [0, yMax * 1.1],
+                range: [innerHeight, 0],
+                nice: true,
+            }),
+        [innerHeight, yMax]
+    )
 
     return (
         <div
             ref={containerRef}
             className="w-full"
-            style={{ position: 'relative' }}
+            data-testid="scatter-graph-svg-visx"
         >
             {title && (
-                <h3 className="text-lg font-semibold mb-4 text-center">
+                <div className="text-lg font-semibold mb-2 text-gray-800 text-center">
                     {title}
-                </h3>
+                </div>
             )}
             <svg
                 width={width}
                 height={height}
                 style={{ background: 'white' }}
-                data-testid="line-graph-svg-visx"
+                data-testid="scatter-graph-svg-visx"
             >
-                <Group top={margin.top} left={margin.left}>
+                <Group left={margin.left} top={margin.top}>
+                    {/* Axes */}
+                    <line
+                        x1={0}
+                        y1={innerHeight}
+                        x2={innerWidth}
+                        y2={innerHeight}
+                        stroke="#333"
+                    />
+                    <line x1={0} y1={0} x2={0} y2={innerHeight} stroke="#333" />
+
+                    {/* Points */}
+                    {data.map((d, i) => (
+                        <Circle
+                            key={`point-${i}`}
+                            cx={xScale(d.date)}
+                            cy={yScale(d.value)}
+                            r={4}
+                            fill={pointColor}
+                            onMouseMove={(event) => {
+                                const coords = localPoint(event)
+                                showTooltip({
+                                    tooltipLeft: coords?.x,
+                                    tooltipTop: coords?.y,
+                                    tooltipData: d.value,
+                                })
+                            }}
+                            onMouseLeave={hideTooltip}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    ))}
                     <AxisLeft
                         scale={yScale}
-                        label={yLabel}
+                        label={'Value'}
                         stroke="#333"
                         tickStroke="#333"
                         tickLabelProps={() => ({
@@ -101,7 +147,7 @@ export default function LineGraph({
                     <AxisBottom
                         scale={xScale}
                         top={innerHeight}
-                        label={xLabel}
+                        label={'Date'}
                         stroke="#333"
                         tickStroke="#333"
                         tickLabelProps={() => ({
@@ -116,45 +162,8 @@ export default function LineGraph({
                             fontWeight: 'bold',
                         }}
                     />
-
-                    {/* Line */}
-                    <LinePath
-                        curve={allCurves.curveNatural}
-                        data={data}
-                        x={(_, i) => xScale(i) ?? 0}
-                        y={(d) => yScale(d) ?? 0}
-                        stroke="#228C20"
-                        strokeWidth={2}
-                        shapeRendering="geometricPrecision"
-                    />
-
-                    {/* Points with tooltip */}
-                    {data.map((d, i) => {
-                        const cx = xScale(i)
-                        const cy = yScale(d)
-                        return (
-                            <circle
-                                key={i}
-                                cx={cx}
-                                cy={cy}
-                                r={4}
-                                fill="#228C20"
-                                onMouseMove={(event) => {
-                                    const coords = localPoint(event)
-                                    showTooltip({
-                                        tooltipLeft: coords?.x,
-                                        tooltipTop: coords?.y,
-                                        tooltipData: d,
-                                    })
-                                }}
-                                onMouseLeave={hideTooltip}
-                                style={{ cursor: 'pointer' }}
-                            />
-                        )
-                    })}
                 </Group>
             </svg>
-
             {tooltipOpen && (
                 <Tooltip
                     key={Math.random()}

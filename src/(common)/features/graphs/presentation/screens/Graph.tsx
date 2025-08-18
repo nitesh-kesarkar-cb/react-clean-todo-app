@@ -17,7 +17,14 @@ import {
     RechartsScatterGraph,
 } from '@/shared/components/recharts'
 
-import { VisxBarGraph, VisxLineGraph } from '@/shared/components/visx'
+import {
+    VisxBarGraph,
+    VisxLineGraph,
+    VisxDonutGraph,
+    VisxPieGraph,
+    VisxHistogramGraph,
+    VisxScatterPlot,
+} from '@/shared/components/visx'
 
 import { useGraphViewModel } from '../../hooks/useGraphViewModal'
 
@@ -378,7 +385,7 @@ const GraphPage = () => {
                                     ) : (
                                         pieGraphData && (
                                             <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                                                <RechartsPieGraph
+                                                <VisxPieGraph
                                                     data={pieGraphData.pieData}
                                                     title={pieGraphData.title}
                                                     height={400}
@@ -396,7 +403,7 @@ const GraphPage = () => {
                                     ) : (
                                         histogramGraphData && (
                                             <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                                                <RechartsHistogramGraph
+                                                <VisxHistogramGraph
                                                     data={
                                                         histogramGraphData.bins
                                                     }
@@ -416,7 +423,7 @@ const GraphPage = () => {
                                     ) : (
                                         donutGraphData && (
                                             <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                                                <RechartsDonutGraph
+                                                <VisxDonutGraph
                                                     data={donutGraphData.data}
                                                     title={donutGraphData.title}
                                                     height={400}
@@ -434,7 +441,7 @@ const GraphPage = () => {
                                     ) : (
                                         scatterGraphData && (
                                             <div className="w-full bg-gray-50 rounded-lg p-4 flex flex-col items-center">
-                                                <RechartsScatterGraph
+                                                <VisxScatterPlot
                                                     data={scatterGraphData.data}
                                                     title={
                                                         scatterGraphData.title
