@@ -38,6 +38,8 @@ export default function HistogramGraph({
                     <BarChart
                         data={data}
                         margin={{ top: 16, right: 24, left: 0, bottom: 24 }}
+                        barCategoryGap={0}
+                        barGap={0}
                     >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="label" tick={{ fontSize: 14 }} />
