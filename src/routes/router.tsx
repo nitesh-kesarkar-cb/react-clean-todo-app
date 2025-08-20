@@ -10,6 +10,7 @@ import {
     userDetailsRoute,
     mapRoute,
     graphListRoute,
+    profileRoute,
 } from '../(common)/routes/router'
 import { todosRoute } from '../(org)/routes/router'
 import { RequireRole, IndexLanding } from './guards'
@@ -62,6 +63,7 @@ const routeTree = rootRoute.addChildren([
         userDetailsRoute,
         mapRoute,
         graphListRoute,
+        profileRoute,
     ]),
     adminRoute.addChildren([allTodosRoute]),
     orgRoute.addChildren([todosRoute]),

@@ -1,12 +1,12 @@
 import { createRoute } from '@tanstack/react-router'
 
-import { commonRoute } from '../../routes/router';
-import LoginPage from '../features/auth/presentation/screens/LoginPage';
-import UserProfilePage from '../features/user/presentation/screens/UserProfile';
-import Graph from '../features/graphs/presentation/screens/Graph';
+import { commonRoute } from '../../routes/router'
+import LoginPage from '../features/auth/presentation/screens/LoginPage'
+import UserProfilePage from '../features/user/presentation/screens/UserProfile'
+import UserProfileDetailsPage from '../features/user/presentation/screens/UserProfileDetails'
+import Graph from '../features/graphs/presentation/screens/Graph'
 import { RequireRole } from '../../routes/guards'
 import { MapPage } from '../features/map/MapPage'
-
 
 /// these are all abac
 
@@ -27,17 +27,31 @@ const mapRoute = createRoute({
 const userDetailsRoute = createRoute({
     getParentRoute: () => commonRoute,
     path: 'user-details',
-    component: () => <RequireRole allowedRoles={['admin', 'org']}>
-        <UserProfilePage />
-    </RequireRole>,
-});
+    component: () => (
+        <RequireRole allowedRoles={['admin', 'org']}>
+            <UserProfilePage />
+        </RequireRole>
+    ),
+})
 
 const graphListRoute = createRoute({
     getParentRoute: () => commonRoute,
     path: 'graphs',
-    component: () => <RequireRole allowedRoles={['admin', 'org', 'common']}><Graph /></RequireRole>,
-});
+    component: () => (
+        <RequireRole allowedRoles={['admin', 'org', 'common']}>
+            <Graph />
+        </RequireRole>
+    ),
+})
 
-export { loginRoute, userDetailsRoute, graphListRoute, mapRoute };
+const profileRoute = createRoute({
+    getParentRoute: () => commonRoute,
+    path: 'profile',
+    component: () => (
+        <RequireRole allowedRoles={['admin', 'org', 'common']}>
+            <UserProfileDetailsPage />
+        </RequireRole>
+    ),
+})
 
-
+export { loginRoute, userDetailsRoute, graphListRoute, mapRoute, profileRoute }

@@ -1,16 +1,20 @@
-import { useForm } from 'react-hook-form'
+import { useEffect, useMemo } from 'react'
+import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
+import { Input } from '@/shadcn/components/ui/input'
+import { Label } from '@/shadcn/components/ui/label'
+import { Button } from '@/shadcn/components/ui/button'
+import { Textarea } from '@/shadcn/components/ui/textarea'
+import { Switch } from '@/shadcn/components/ui/switch'
+import { Checkbox } from '@/shadcn/components/ui/checkbox'
+import { RadioGroup, RadioGroupItem } from '@/shadcn/components/ui/radio-group'
 import {
     Card,
     CardHeader,
     CardTitle,
     CardContent,
 } from '@/shadcn/components/ui/card'
-import { Input } from '@/shadcn/components/ui/input'
-import { Button } from '@/shadcn/components/ui/button'
-import { Textarea } from '@/shadcn/components/ui/textarea'
-import { Label } from '@/shadcn/components/ui/label'
 import {
     Select,
     SelectTrigger,
@@ -18,289 +22,399 @@ import {
     SelectContent,
     SelectItem,
 } from '@/shadcn/components/ui/select'
-import { UserGender as Gender } from '@/(common)/features/user/di/UserProfileDetails'
+import { Badge } from '@/shadcn/components/ui/badge'
+import RawFileInput, { withFileUploader } from '@/shared/hoc/fileUploader'
+import {
+    UserGender,
+    type UserProfileDetails,
+} from '@/(common)/features/user/di/UserProfileDetails'
 
-const addressSchema = z.object({
+const AddressSchema = z.object({
     addr_line: z.object({
-        addr1: z.string().min(1, 'Address Line 1 is required'),
+        addr1: z.string().min(1, 'Address line 1 is required'),
         addr2: z.string().optional(),
     }),
     locality: z.string().min(1, 'Locality is required'),
     country: z.string().min(1, 'Country is required'),
+    isDefault: z.boolean(),
 })
 
-const universitySchema = z.object({
-    name: z.string().min(1, 'University name is required'),
-    address: addressSchema,
-    establishedYear: z.number().min(1800, 'Year must be valid'),
+const NotificationPreferencesSchema = z.object({
+    email: z.boolean(),
+    sms: z.boolean(),
+    push: z.boolean(),
 })
 
-const profileSchema = z.object({
-    age: z.number().min(0, 'Age is required'),
-    gender: z.enum([Gender.Male, Gender.Female, Gender.Other]),
-    phone: z.string().min(10, 'Phone is required'),
-    birthDate: z.date(),
-    image: z.string().url(),
-    bloodGroup: z.string().min(1, 'Blood group is required'),
-    height: z.number().min(1, 'Height required'),
-    weight: z.number().min(1, 'Weight required'),
-    eyeColor: z.string().min(1, 'Eye color required'),
-    university: universitySchema,
-    about: z.string().min(10, 'About must be at least 10 characters'),
-    address: addressSchema,
+const ProfileSchema = z.object({
+    age: z.number().min(0).max(120),
+    gender: z.enum([UserGender.Male, UserGender.Female, UserGender.Other]),
+    phone: z.string().min(4),
+    birthDate: z.date('Birth date is required'),
+    image: z.string(),
+    weight: z.number().min(0),
+    about: z.string().max(1000),
+    address: AddressSchema,
+    notificationsEnabled: z.boolean(),
+    notificationPreferences: NotificationPreferencesSchema,
+    interests: z.array(z.string()).optional(),
+    preferredContact: z.enum(['email', 'phone']),
+    acceptPrivacy: z.boolean(),
 })
 
-type ProfileFormValues = z.infer<typeof profileSchema>
+export type ProfileFormValues = z.infer<typeof ProfileSchema>
 
-export default function ProfileForm() {
+export async function defaultUploadFn(file: File): Promise<string> {
+    const formData = new FormData()
+    formData.append('file', file)
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            if (formData) {
+                const response = {
+                    message: 'User profile details fetched successfully',
+                    data: { url: 'https://picsum.photos/id/237/200/300' },
+                }
+                resolve(response.data.url)
+            } else {
+                reject(new Error('Failed to fetch user'))
+            }
+        }, 1000)
+    })
+}
+
+const FileInputWithUploader = withFileUploader(RawFileInput, defaultUploadFn)
+
+export default function ProfileEditForm({
+    formData,
+    onSubmit,
+    setFormData,
+}: {
+    formData?: ProfileFormValues
+    onSubmit: (data: ProfileFormValues) => void
+    setFormData: (data: ProfileFormValues) => void
+}) {
     const profileForm = useForm<ProfileFormValues>({
-        resolver: zodResolver(profileSchema),
-        defaultValues: {
-            age: 25,
-            gender: Gender.Male,
-            phone: '',
-            birthDate: new Date(),
-            bloodGroup: '',
-            height: 170,
-            weight: 70,
-            eyeColor: '',
-            university: {
-                name: '',
-                address: {
-                    addr_line: { addr1: '', addr2: '' },
-                    locality: '',
-                    country: '',
-                },
-                establishedYear: 2000,
-            },
-            about: '',
-            address: {
-                addr_line: { addr1: '', addr2: '' },
-                locality: '',
-                country: '',
-            },
-        },
+        resolver: zodResolver(ProfileSchema),
+        defaultValues: formData as ProfileFormValues,
+        mode: 'onSubmit',
+        reValidateMode: 'onChange',
     })
 
-    const handleProfile = (data: ProfileFormValues) => {
-        console.log('✅ Profile data', data)
+    const {
+        register,
+        control,
+        watch,
+        formState: { errors, isSubmitting },
+    } = profileForm
+
+    const imageValue = watch('image')
+    const notificationsEnabled = watch('notificationsEnabled')
+
+    function handleUploadedUrl(url: string) {
+        profileForm.setValue('image', url, {
+            shouldValidate: true,
+            shouldDirty: true,
+        })
     }
 
+    const handleProfileSubmit = (data: ProfileFormValues) => {
+        try {
+            onSubmit(data as UserProfileDetails)
+            alert('Profile updated successfully!')
+        } catch (error) {
+            console.error('Error updating profile:', error)
+            alert('Failed to update profile. Please try again.')
+        }
+    }
+
+    useEffect(() => {
+        const subscription = profileForm.watch((values) => {
+            setFormData(values as UserProfileDetails)
+        })
+        return () => subscription.unsubscribe()
+    }, [profileForm, setFormData])
+
+    const interestOptions = useMemo(
+        () => ['sports', 'music', 'travel', 'programming', 'reading'],
+        []
+    )
+
     return (
-        <div className="grid md:grid-cols-2 gap-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Profile Form</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <form
-                        onSubmit={profileForm.handleSubmit(handleProfile)}
-                        className="space-y-4"
-                    >
-                        {/* Personal Info */}
+        <Card className="max-w-3xl mx-auto">
+            <CardHeader>
+                <CardTitle>
+                    Edit profile with React Hooks form and Zod
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <form
+                    onSubmit={profileForm.handleSubmit(handleProfileSubmit)}
+                    className="space-y-6"
+                >
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
                             <Label>Age</Label>
                             <Input
                                 type="number"
-                                {...profileForm.register('age', {
-                                    valueAsNumber: true,
-                                })}
+                                {...register('age', { valueAsNumber: true })}
                             />
+                            {errors.age && (
+                                <p className="text-sm text-destructive">
+                                    {errors.age.message as string}
+                                </p>
+                            )}
                         </div>
 
                         <div>
                             <Label>Gender</Label>
-                            <Select
-                                defaultValue={profileForm.getValues('gender')}
-                                onValueChange={(v: string) =>
-                                    profileForm.setValue('gender', v as Gender)
-                                }
+                            <select
+                                {...register('gender')}
+                                className="block w-full rounded-md border px-2 py-2"
                             >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select gender" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="male">Male</SelectItem>
-                                    <SelectItem value="female">
-                                        Female
-                                    </SelectItem>
-                                    <SelectItem value="other">Other</SelectItem>
-                                </SelectContent>
-                            </Select>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
                         </div>
 
                         <div>
                             <Label>Phone</Label>
-                            <Input
-                                type="tel"
-                                {...profileForm.register('phone')}
-                            />
+                            <Input {...register('phone')} />
                         </div>
 
                         <div>
-                            <Label>Date of Birth</Label>
-                            <Input
-                                type="date"
-                                {...profileForm.register('birthDate')}
-                            />
-                        </div>
-
-                        <div>
-                            <Label>Image URL</Label>
-                            <Input
-                                type="url"
-                                {...profileForm.register('image')}
-                            />
-                        </div>
-
-                        <div>
-                            <Label>Blood Group</Label>
-                            <Input
-                                type="text"
-                                {...profileForm.register('bloodGroup')}
-                            />
-                        </div>
-
-                        <div>
-                            <Label>Height (cm)</Label>
-                            <Input
-                                type="number"
-                                {...profileForm.register('height', {
-                                    valueAsNumber: true,
-                                })}
-                            />
+                            <Label>Birth date</Label>
+                            <Input type="date" {...register('birthDate')} />
                         </div>
 
                         <div>
                             <Label>Weight (kg)</Label>
                             <Input
                                 type="number"
-                                {...profileForm.register('weight', {
-                                    valueAsNumber: true,
-                                })}
+                                {...register('weight', { valueAsNumber: true })}
                             />
                         </div>
 
                         <div>
-                            <Label>Eye Color</Label>
-                            <Input
-                                type="text"
-                                {...profileForm.register('eyeColor')}
-                            />
-                        </div>
-
-                        {/* University */}
-                        <div className="pt-4">
-                            <h3 className="font-semibold">University</h3>
-                        </div>
-
-                        <div>
-                            <Label>University Name</Label>
-                            <Input
-                                {...profileForm.register('university.name')}
-                            />
-                        </div>
-
-                        <div>
-                            <Label>Established Year</Label>
-                            <Input
-                                type="number"
-                                {...profileForm.register(
-                                    'university.establishedYear',
-                                    {
-                                        valueAsNumber: true,
-                                    }
+                            <Label>Preferred contact</Label>
+                            <Controller
+                                control={control}
+                                name="preferredContact"
+                                render={({ field }) => (
+                                    <RadioGroup
+                                        value={field.value}
+                                        onValueChange={field.onChange}
+                                        className="flex gap-4 mt-2"
+                                    >
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem
+                                                value="email"
+                                                id="r1"
+                                            />
+                                            <Label htmlFor="r1">Email</Label>
+                                        </div>
+                                        <div className="flex items-center space-x-2">
+                                            <RadioGroupItem
+                                                value="phone"
+                                                id="r2"
+                                            />
+                                            <Label htmlFor="r2">Phone</Label>
+                                        </div>
+                                    </RadioGroup>
                                 )}
                             />
                         </div>
 
-                        <div>
-                            <Label>University Address Line 1</Label>
-                            <Input
-                                {...profileForm.register(
-                                    'university.address.addr_line.addr1'
+                        <div className="flex items-center gap-2">
+                            <Controller
+                                control={control}
+                                name="acceptPrivacy"
+                                render={({ field }) => (
+                                    <>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                        <Label>
+                                            I accept the privacy policy
+                                        </Label>
+                                    </>
                                 )}
                             />
                         </div>
+                    </div>
 
+                    <div>
+                        <Label>About</Label>
+                        <Textarea {...register('about')} rows={4} />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <Label>University Address Line 2</Label>
-                            <Input
-                                {...profileForm.register(
-                                    'university.address.addr_line.addr2'
-                                )}
-                            />
+                            <Label>Address line 1</Label>
+                            <Input {...register('address.addr_line.addr1')} />
                         </div>
-
                         <div>
-                            <Label>University Locality</Label>
-                            <Input
-                                {...profileForm.register(
-                                    'university.address.locality'
-                                )}
-                            />
+                            <Label>Address line 2</Label>
+                            <Input {...register('address.addr_line.addr2')} />
                         </div>
-
-                        <div>
-                            <Label>University Country</Label>
-                            <Input
-                                {...profileForm.register(
-                                    'university.address.country'
-                                )}
-                            />
-                        </div>
-
-                        {/* Personal Address */}
-                        <div className="pt-4">
-                            <h3 className="font-semibold">Home Address</h3>
-                        </div>
-
-                        <div>
-                            <Label>Address Line 1</Label>
-                            <Input
-                                {...profileForm.register(
-                                    'address.addr_line.addr1'
-                                )}
-                            />
-                        </div>
-
-                        <div>
-                            <Label>Address Line 2</Label>
-                            <Input
-                                {...profileForm.register(
-                                    'address.addr_line.addr2'
-                                )}
-                            />
-                        </div>
-
                         <div>
                             <Label>Locality</Label>
-                            <Input
-                                {...profileForm.register('address.locality')}
-                            />
+                            <Input {...register('address.locality')} />
                         </div>
-
                         <div>
                             <Label>Country</Label>
-                            <Input
-                                {...profileForm.register('address.country')}
+                            <Input {...register('address.country')} />
+                        </div>
+                        <div className="col-span-2 flex items-center gap-2">
+                            <Label>Default address</Label>
+                            <Controller
+                                control={control}
+                                name="address.isDefault"
+                                render={({ field }) => (
+                                    <Switch
+                                        checked={field.value}
+                                        onCheckedChange={field.onChange}
+                                    />
+                                )}
                             />
                         </div>
+                    </div>
 
-                        <div>
-                            <Label>About</Label>
-                            <Textarea
-                                rows={3}
-                                {...profileForm.register('about')}
-                            />
+                    <div className="col-span-2 flex items-center gap-2">
+                        <Label>Notifications Enabled</Label>
+                        <Controller
+                            control={control}
+                            name="notificationsEnabled"
+                            render={({ field }) => (
+                                <Switch
+                                    checked={field.value}
+                                    onCheckedChange={field.onChange}
+                                />
+                            )}
+                        />
+                    </div>
+
+                    {notificationsEnabled && (
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="flex items-center gap-2">
+                                <Label>Email notifications</Label>
+                                <Controller
+                                    control={control}
+                                    name="notificationPreferences.email"
+                                    render={({ field }) => (
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    )}
+                                />
+                            </div>
+                            <div className=" flex items-center gap-2">
+                                <Label>SMS notifications</Label>
+                                <Controller
+                                    control={control}
+                                    name="notificationPreferences.sms"
+                                    render={({ field }) => (
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    )}
+                                />
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Label>Push notifications</Label>
+                                <Controller
+                                    control={control}
+                                    name="notificationPreferences.push"
+                                    render={({ field }) => (
+                                        <Switch
+                                            checked={field.value}
+                                            onCheckedChange={field.onChange}
+                                        />
+                                    )}
+                                />
+                            </div>
                         </div>
+                    )}
 
-                        <Button type="submit" className="w-full">
-                            Save Profile
+                    <div>
+                        <Label>Interests</Label>
+                        <Controller
+                            control={control}
+                            name="interests"
+                            render={({ field }) => (
+                                <div className="space-y-2">
+                                    <Select
+                                        onValueChange={(val) => {
+                                            if (!field.value?.includes(val)) {
+                                                field.onChange([
+                                                    ...(field.value ?? []),
+                                                    val,
+                                                ])
+                                            }
+                                        }}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select interests" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {interestOptions.map((opt) => (
+                                                <SelectItem
+                                                    key={opt}
+                                                    value={opt}
+                                                >
+                                                    {opt}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <div className="flex flex-wrap gap-2">
+                                        {field.value?.map((val: string) => (
+                                            <Badge
+                                                key={val}
+                                                onClick={() =>
+                                                    field.onChange(
+                                                        field.value?.filter(
+                                                            (v) => v !== val
+                                                        )
+                                                    )
+                                                }
+                                                className="cursor-pointer"
+                                            >
+                                                {val} ✕
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        />
+                    </div>
+
+                    <div>
+                        <Label>Profile image</Label>
+                        <FileInputWithUploader onUploaded={handleUploadedUrl} />
+                        {typeof imageValue === 'string' && imageValue && (
+                            <div className="mt-2">
+                                <img
+                                    src={imageValue}
+                                    alt="current"
+                                    className="w-28 h-28 object-cover rounded-md border"
+                                />
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                        <Button type="submit" disabled={isSubmitting}>
+                            Save
                         </Button>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
+                        <Button type="button" variant="ghost">
+                            Cancel
+                        </Button>
+                    </div>
+                </form>
+            </CardContent>
+        </Card>
     )
 }
