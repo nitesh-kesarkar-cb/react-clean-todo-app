@@ -89,7 +89,33 @@ export default function ProfileEditForm({
     )
 
     const formik = useFormik<UserProfileDetails>({
-        initialValues: formData,
+        initialValues: {
+            age: formData?.age ?? 0,
+            gender: formData?.gender ?? UserGender.Other,
+            phone: formData?.phone ?? '',
+            birthDate: formData?.birthDate ?? '',
+            image: formData?.image ?? '',
+            weight: formData?.weight ?? 0,
+            about: formData?.about ?? '',
+            address: {
+                addr_line: {
+                    addr1: formData?.address?.addr_line?.addr1 ?? '',
+                    addr2: formData?.address?.addr_line?.addr2 ?? '',
+                },
+                locality: formData?.address?.locality ?? '',
+                country: formData?.address?.country ?? '',
+                isDefault: formData?.address?.isDefault ?? false,
+            },
+            notificationsEnabled: formData?.notificationsEnabled ?? false,
+            notificationPreferences: {
+                email: formData?.notificationPreferences?.email ?? false,
+                sms: formData?.notificationPreferences?.sms ?? false,
+                push: formData?.notificationPreferences?.push ?? false,
+            },
+            interests: formData?.interests ?? [],
+            preferredContact: formData?.preferredContact ?? 'email',
+            acceptPrivacy: formData?.acceptPrivacy ?? false,
+        },
         validate: (values) => {
             const errors: Record<string, string> = {}
             const { error } = ProfileSchema.validate(values, {
