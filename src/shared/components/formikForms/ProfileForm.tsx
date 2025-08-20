@@ -416,7 +416,6 @@ export default function ProfileEditForm({
                                 ))}
                             </SelectContent>
                         </Select>
-                        <div className="flex flex-wrap gap-2 mt-2"></div>
                         {values?.interests?.map((val) => (
                             <Badge
                                 key={val}
