@@ -159,7 +159,7 @@ export default function ProfileEditForm({
     return (
         <Card className="max-w-3xl mx-auto">
             <CardHeader>
-                <CardTitle>Edit profile</CardTitle>
+                <CardTitle>Edit profile with Formik forms and Joi</CardTitle>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-6">

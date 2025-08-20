@@ -141,7 +141,9 @@ export default function ProfileEditForm({
     return (
         <Card className="max-w-3xl mx-auto">
             <CardHeader>
-                <CardTitle>Edit profile</CardTitle>
+                <CardTitle>
+                    Edit profile with React Hooks form and Zod
+                </CardTitle>
             </CardHeader>
             <CardContent>
                 <form
