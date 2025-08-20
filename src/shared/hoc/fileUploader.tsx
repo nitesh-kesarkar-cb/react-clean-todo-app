@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export function withFileUploader<
     TProps extends {
@@ -17,6 +17,14 @@ export function withFileUploader<
         const [uploading, setUploading] = useState<boolean>(false)
         const [fileName, setFileName] = useState<string | null>(null)
         const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+
+        useEffect(() => {
+            return () => {
+                if (previewUrl) {
+                    URL.revokeObjectURL(previewUrl)
+                }
+            }
+        }, [previewUrl])
 
         async function handleFile(file?: File | null) {
             if (!file) return
